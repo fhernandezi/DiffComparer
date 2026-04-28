@@ -1,5 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using DiffComparer.UI.Services;
+using DiffComparer.UI.ViewModels;
 
 namespace DiffComparer.UI.Views;
 
@@ -10,7 +12,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-
+        DataContext = new MainWindowViewModel(
+        new FilePickerService(this));
         // Conectar scroll sincronizado después de cargar la ventana
         this.Opened += (_, _) => ConnectScrollSync();
     }

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DiffComparer.Core;
+using DiffComparer.UI.Interfaces;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,6 +13,12 @@ namespace DiffComparer.UI.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly DiffEngine _engine = new();
+    private readonly IFilePickerService _filePicker;
+    public MainWindowViewModel(IFilePickerService filePicker)
+    {
+        _filePicker = filePicker;
+    }
+
 
     [ObservableProperty]
     private string _leftText = "";
@@ -73,5 +80,22 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         IsEditMode = true;
         StatsText = "";
+    }
+    [RelayCommand]
+    private async Task OpenLeftFileAsync()
+    {
+        var text = await _filePicker.OpenTextFileAsync();
+
+        if (text != null)
+            LeftText = text;
+    }
+
+    [RelayCommand]
+    private async Task OpenRightFileAsync()
+    {
+        var text = await _filePicker.OpenTextFileAsync();
+
+        if (text != null)
+            RightText = text;
     }
 }
