@@ -1,0 +1,187 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DiffComparer.UI.ViewModels"
+        xmlns:core="using:DiffComparer.Core"
+        xmlns:converters="using:DiffComparer.UI.Converters"
+        x:Class="DiffComparer.UI.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="DiffComparer"
+        Width="1200" Height="700"
+        Background="#1e1e1e">
+
+	<Window.Resources>
+		<converters:StatusToColorConverter x:Key="StatusToColor"/>
+		<converters:WordChangedToColorConverter x:Key="WordChangedToColor"/>
+	</Window.Resources>
+
+	<DockPanel>
+
+		<!-- Toolbar -->
+		<StackPanel DockPanel.Dock="Top"
+					Orientation="Horizontal"
+					Spacing="8"
+					Margin="10,8,10,8">
+
+			<Button Content="Abrir izquierda"
+        Command="{Binding OpenLeftFileCommand}"
+        IsVisible="{Binding IsEditMode}"/>
+
+			<Button Content="Abrir derecha"
+					Command="{Binding OpenRightFileCommand}"
+					IsVisible="{Binding IsEditMode}"/>
+
+			<Button Content="Comparar"
+					Command="{Binding CompareCommand}"
+					IsVisible="{Binding IsEditMode}"
+					IsEnabled="{Binding !IsComparing}"/>
+
+			<Button Content="Editar"
+					Command="{Binding EditCommand}"
+					IsVisible="{Binding !IsEditMode}"/>
+			<Button Content="Cancelar"
+					Command="{Binding CompareCommand}"
+					IsVisible="{Binding IsComparing}"
+					Margin="8,0,0,0"/>
+			<TextBlock Text="Comparando..."
+					   IsVisible="{Binding IsComparing}"
+					   VerticalAlignment="Center"
+					   Foreground="Gray"/>
+
+			<!-- Estadísticas, solo visibles en modo diff -->
+			<TextBlock Text="{Binding StatsText}"
+					   IsVisible="{Binding !IsEditMode}"
+					   VerticalAlignment="Center"
+					   Foreground="Gray"
+					   Margin="16,0,0,0"/>
+
+		</StackPanel>
+
+		<!-- Paneles principales -->
+		<Grid ColumnDefinitions="*,4,*" Margin="10,0,10,10">
+
+			<!-- Separador vertical -->
+			<Rectangle Grid.Column="1" Fill="#333333"/>
+
+			<!-- ═══════════════ PANEL IZQUIERDO ═══════════════ -->
+			<Grid Grid.Column="0" RowDefinitions="*">
+
+				<!-- MODO EDICIÓN -->
+				<TextBox IsVisible="{Binding IsEditMode}"
+						 Text="{Binding LeftText}"
+						 AcceptsReturn="True"
+						 AcceptsTab="True"
+						 FontFamily="Cascadia Code,Consolas,monospace"
+						 FontSize="13"
+						 Background="#1e1e1e"
+						 Foreground="White"
+						 BorderBrush="#444"
+						 Watermark="Pega el texto izquierdo aquí..."/>
+
+				<!-- MODO DIFF izquierdo -->
+				<ScrollViewer Name="ScrollLeft"
+							  IsVisible="{Binding !IsEditMode}"
+							  HorizontalScrollBarVisibility="Auto"
+							  VerticalScrollBarVisibility="Auto">
+					<ItemsControl ItemsSource="{Binding DiffLines}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate x:DataType="core:LineMap">
+								<Grid ColumnDefinitions="40,*" Height="22"
+									  Background="{Binding Status, Converter={StaticResource StatusToColor}}">
+									<TextBlock Grid.Column="0"
+											   Text="{Binding LeftLineDisplay}"
+											   Foreground="#666" FontSize="11"
+											   FontFamily="Cascadia Code,Consolas,monospace"
+											   VerticalAlignment="Center"
+											   HorizontalAlignment="Right"
+											   Margin="0,0,8,0"/>
+									<ItemsControl Grid.Column="1"
+												  ItemsSource="{Binding LeftSegments}"
+												  VerticalAlignment="Center"
+												  Margin="4,0,0,0">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<StackPanel Orientation="Horizontal"/>
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate x:DataType="core:WordSegment">
+												<TextBlock Text="{Binding Text}"
+														   Foreground="White"
+														   FontFamily="Cascadia Code,Consolas,monospace"
+														   FontSize="13"
+														   Background="{Binding IsChanged,
+                                                   Converter={StaticResource WordChangedToColor}}"/>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</Grid>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+
+			</Grid>
+
+			<!-- ═══════════════ PANEL DERECHO ═══════════════ -->
+			<Grid Grid.Column="2" RowDefinitions="*">
+
+				<!-- MODO EDICIÓN -->
+				<TextBox IsVisible="{Binding IsEditMode}"
+						 Text="{Binding RightText}"
+						 AcceptsReturn="True"
+						 AcceptsTab="True"
+						 FontFamily="Cascadia Code,Consolas,monospace"
+						 FontSize="13"
+						 Background="#1e1e1e"
+						 Foreground="White"
+						 BorderBrush="#444"
+						 Watermark="Pega el texto derecho aquí..."/>
+
+				<!-- MODO DIFF derecho -->
+				<ScrollViewer Name="ScrollRight"
+							  IsVisible="{Binding !IsEditMode}"
+							  HorizontalScrollBarVisibility="Auto"
+							  VerticalScrollBarVisibility="Auto">
+					<ItemsControl ItemsSource="{Binding DiffLines}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate x:DataType="core:LineMap">
+								<Grid ColumnDefinitions="40,*" Height="22"
+									  Background="{Binding Status, Converter={StaticResource StatusToColor}}">
+									<TextBlock Grid.Column="0"
+											   Text="{Binding RightLineDisplay}"
+											   Foreground="#666" FontSize="11"
+											   FontFamily="Cascadia Code,Consolas,monospace"
+											   VerticalAlignment="Center"
+											   HorizontalAlignment="Right"
+											   Margin="0,0,8,0"/>
+									<ItemsControl Grid.Column="1"
+												  ItemsSource="{Binding RightSegments}"
+												  VerticalAlignment="Center"
+												  Margin="4,0,0,0">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<StackPanel Orientation="Horizontal"/>
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate x:DataType="core:WordSegment">
+												<TextBlock Text="{Binding Text}"
+														   Foreground="White"
+														   FontFamily="Cascadia Code,Consolas,monospace"
+														   FontSize="13"
+														   Background="{Binding IsChanged,
+                                                   Converter={StaticResource WordChangedToColor}}"/>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</Grid>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+
+			</Grid>
+
+		</Grid>
+	</DockPanel>
+</Window>

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DiffComparer.Core/DiffComparer.Core.csproj" />
+  <Project Path="DiffComparer.UI/DiffComparer.UI.csproj" />
+</Solution>
