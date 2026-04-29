@@ -134,7 +134,7 @@ public partial class MainWindowViewModel : ViewModelBase
         CurrentChangeIndex = previous;
     }
 
-    private List<int> GetChangeBlocks()
+    internal List<int> GetChangeBlocks()
     {
         var blocks = new List<int>();
         var insideBlock = false;
