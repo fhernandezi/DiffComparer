@@ -23,30 +23,32 @@
 					Margin="10,8,10,8">
 
 			<Button Content="Abrir izquierda"
-        Command="{Binding OpenLeftFileCommand}"
-        IsVisible="{Binding IsEditMode}"/>
-
-			<Button Content="Abrir izquierda"
-			Command="{Binding OpenLeftFileCommand}"
-			IsVisible="{Binding IsEditMode}"/>
+					Command="{Binding OpenLeftFileCommand}"
+					IsVisible="{Binding IsEditMode}"/>
 
 			<Button Content="Abrir derecha"
 					Command="{Binding OpenRightFileCommand}"
 					IsVisible="{Binding IsEditMode}"/>
 
+			<Button Content="Comparar"
+					Command="{Binding CompareCommand}"
+					IsVisible="{Binding IsEditMode}"
+					IsEnabled="{Binding !IsComparing}"/>
+
 			<Button Content="Editar"
 					Command="{Binding EditCommand}"
 					IsVisible="{Binding !IsEditMode}"/>
+
 			<Button Content="Cancelar"
-					Command="{Binding CompareCommand}"
+					Command="{Binding CompareCancelCommand}"
 					IsVisible="{Binding IsComparing}"
 					Margin="8,0,0,0"/>
+
 			<TextBlock Text="Comparando..."
 					   IsVisible="{Binding IsComparing}"
 					   VerticalAlignment="Center"
 					   Foreground="Gray"/>
 
-			<!-- Estadísticas, solo visibles en modo diff -->
 			<TextBlock Text="{Binding StatsText}"
 					   IsVisible="{Binding !IsEditMode}"
 					   VerticalAlignment="Center"
@@ -54,7 +56,6 @@
 					   Margin="16,0,0,0"/>
 
 		</StackPanel>
-
 		<!-- Paneles principales -->
 		<Grid ColumnDefinitions="*,4,*" Margin="10,0,10,10">
 
@@ -81,10 +82,10 @@
 							  IsVisible="{Binding !IsEditMode}"
 							  HorizontalScrollBarVisibility="Auto"
 							  VerticalScrollBarVisibility="Auto">
-					<ItemsControl ItemsSource="{Binding DiffLines}">
+					<ItemsControl ItemsSource="{Binding DiffLines}"   HorizontalAlignment="Left">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="core:LineMap">
-								<Grid ColumnDefinitions="40,*" Height="22"
+								<Grid ColumnDefinitions="40,*" Height="22"  MinWidth="2000"
 									  Background="{Binding Status, Converter={StaticResource StatusToColor}}">
 									<TextBlock Grid.Column="0"
 											   Text="{Binding LeftLineDisplay}"
@@ -141,10 +142,10 @@
 							  IsVisible="{Binding !IsEditMode}"
 							  HorizontalScrollBarVisibility="Auto"
 							  VerticalScrollBarVisibility="Auto">
-					<ItemsControl ItemsSource="{Binding DiffLines}">
+					<ItemsControl ItemsSource="{Binding DiffLines}"   HorizontalAlignment="Left">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="core:LineMap">
-								<Grid ColumnDefinitions="40,*" Height="22"
+								<Grid ColumnDefinitions="40,*" Height="22"  MinWidth="2000"
 									  Background="{Binding Status, Converter={StaticResource StatusToColor}}">
 									<TextBlock Grid.Column="0"
 											   Text="{Binding RightLineDisplay}"

@@ -23,22 +23,25 @@ public partial class MainWindow : Window
         var scrollLeft = this.FindControl<ScrollViewer>("ScrollLeft");
         var scrollRight = this.FindControl<ScrollViewer>("ScrollRight");
 
-        if (scrollLeft is null || scrollRight is null) return;
+        if (scrollLeft is null || scrollRight is null)
+            return;
 
         scrollLeft.ScrollChanged += (_, _) =>
-        {
-            if (_isSyncing) return;
-            _isSyncing = true;
-            scrollRight.Offset = scrollLeft.Offset;
-            _isSyncing = false;
-        };
+            SyncScroll(scrollLeft, scrollRight);
 
         scrollRight.ScrollChanged += (_, _) =>
-        {
-            if (_isSyncing) return;
-            _isSyncing = true;
-            scrollLeft.Offset = scrollRight.Offset;
-            _isSyncing = false;
-        };
+            SyncScroll(scrollRight, scrollLeft);
+    }
+
+    private void SyncScroll(ScrollViewer source, ScrollViewer target)
+    {
+        if (_isSyncing)
+            return;
+
+        _isSyncing = true;
+
+        target.Offset = source.Offset;
+
+        _isSyncing = false;
     }
 }
