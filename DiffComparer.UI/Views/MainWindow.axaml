@@ -30,6 +30,14 @@
 					Command="{Binding OpenRightFileCommand}"
 					IsVisible="{Binding IsEditMode}"/>
 
+			<Button Content="↑ Cambio"
+					Command="{Binding PreviousChangeCommand}"
+					IsVisible="{Binding !IsEditMode}"/>
+
+			<Button Content="↓ Cambio"
+					Command="{Binding NextChangeCommand}"
+					IsVisible="{Binding !IsEditMode}"/>
+
 			<Button Content="Comparar"
 					Command="{Binding CompareCommand}"
 					IsVisible="{Binding IsEditMode}"

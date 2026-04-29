@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using DiffComparer.Core;
 using DiffComparer.UI.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -34,6 +35,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _statsText = "";
+
+    [ObservableProperty]
+    private int _currentChangeIndex = -1;
 
     public ObservableCollection<LineMap> DiffLines { get; } = new();
 
@@ -97,5 +101,59 @@ public partial class MainWindowViewModel : ViewModelBase
 
         if (text != null)
             RightText = text;
+    }
+    [RelayCommand]
+    private void NextChange()
+    {
+        var changes = GetChangeBlocks();
+
+        if (changes.Count == 0)
+            return;
+
+        var next = changes.FirstOrDefault(i => i > CurrentChangeIndex);
+
+        if (!changes.Any(i => i > CurrentChangeIndex))
+            next = changes.First();
+
+        CurrentChangeIndex = next;
+    }
+
+    [RelayCommand]
+    private void PreviousChange()
+    {
+        var changes = GetChangeBlocks();
+
+        if (changes.Count == 0)
+            return;
+
+        var previous = changes
+            .Where(i => i < CurrentChangeIndex)
+            .DefaultIfEmpty(changes.Last())
+            .Last();
+
+        CurrentChangeIndex = previous;
+    }
+
+    private List<int> GetChangeBlocks()
+    {
+        var blocks = new List<int>();
+        var insideBlock = false;
+
+        for (int i = 0; i < DiffLines.Count; i++)
+        {
+            var isChange = DiffLines[i].Status != LineStatus.Equal;
+
+            if (isChange && !insideBlock)
+            {
+                blocks.Add(i); // inicio del bloque
+                insideBlock = true;
+            }
+            else if (!isChange)
+            {
+                insideBlock = false;
+            }
+        }
+
+        return blocks;
     }
 }
