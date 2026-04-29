@@ -75,6 +75,8 @@ C
 - .NET (última versión recomendada)  
 - Avalonia UI  
 
+---
+
 ## 📸 Interfaz
 
 Abrir archivo izquierdo/derecho
@@ -83,6 +85,8 @@ Diferencias visuales con colores:
 🟢 Agregado
 🔴 Eliminado
 🟡 Modificado
+
+---
 
 ## 🧠 Roadmap
 
@@ -93,11 +97,15 @@ Optimización de rendimiento
 Detección de bloques movidos
 Herramienta de merge (futuro)
 
+---
+
 ## ⚠️ Limitaciones conocidas
 
 Bloques grandes movidos se interpretan como eliminación + inserción
 Rendimiento no optimizado para archivos muy grandes
 No incluye funcionalidad de merge (aún)
+
+---
 
 ## 💡 ¿Por qué este proyecto?
 
@@ -107,11 +115,15 @@ Algoritmos de diff (Myers, LCS)
 Estrategias heurísticas de alineación
 Diseño de UI/UX en herramientas para desarrolladores
 
+---
+
 ## 🤝 Contribuciones
 
 Se agradece cualquier feedback o idea.
 
 Si encuentras un caso donde el diff sea confuso o incorrecto, abre un issue.
+
+---
 
 ## 📜 Licencia
 
