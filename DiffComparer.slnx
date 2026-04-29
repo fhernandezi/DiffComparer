@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="DiffComparer.Core/DiffComparer.Core.csproj" />
+  <Project Path="DiffComparer.Tests/DiffComparer.Tests.csproj" Id="1ccf5db5-afc4-4181-b631-bd6776303d78" />
   <Project Path="DiffComparer.UI/DiffComparer.UI.csproj" />
 </Solution>
