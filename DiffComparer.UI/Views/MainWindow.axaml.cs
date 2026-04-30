@@ -1,5 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaEdit;
+using DiffComparer.Core;
+using DiffComparer.UI.Renderers;
 using DiffComparer.UI.Services;
 using DiffComparer.UI.ViewModels;
 
@@ -9,6 +12,11 @@ public partial class MainWindow : Window
 {
     private bool _isSyncing = false;
 
+    private readonly DiffEngine _diffEngine = new();
+
+    private DiffLineBackgroundRenderer? _leftRenderer;
+    private DiffLineBackgroundRenderer? _rightRenderer;
+    private bool _isUpdatingVisualText = false;
     public MainWindow()
     {
         InitializeComponent();
@@ -18,6 +26,7 @@ public partial class MainWindow : Window
 
         Opened += (_, _) =>
         {
+            ConnectEditors(vm);
             ConnectScrollSync();
 
             vm.PropertyChanged += (_, e) =>
@@ -26,6 +35,65 @@ public partial class MainWindow : Window
                     ScrollToChange(vm.CurrentChangeIndex);
             };
         };
+    }
+
+    private void ConnectEditors(MainWindowViewModel vm)
+    {
+        var leftEditor = this.FindControl<TextEditor>("LeftEditor");
+        var rightEditor = this.FindControl<TextEditor>("RightEditor");
+
+        if (leftEditor is null || rightEditor is null)
+            return;
+
+        leftEditor.IsReadOnly = false;
+        rightEditor.IsReadOnly = false;
+
+        leftEditor.Focusable = true;
+        rightEditor.Focusable = true;
+
+        leftEditor.Text = vm.LeftText ?? "";
+        rightEditor.Text = vm.RightText ?? "";
+
+        _leftRenderer = new DiffLineBackgroundRenderer(isLeftSide: true);
+        _rightRenderer = new DiffLineBackgroundRenderer(isLeftSide: false);
+
+        leftEditor.TextArea.TextView.BackgroundRenderers.Add(_leftRenderer);
+        rightEditor.TextArea.TextView.BackgroundRenderers.Add(_rightRenderer);
+
+        leftEditor.TextChanged += (_, _) =>
+        {
+            vm.LeftText = leftEditor.Text;
+            UpdateEditorDiff(leftEditor, rightEditor);
+        };
+
+        rightEditor.TextChanged += (_, _) =>
+        {
+            vm.RightText = rightEditor.Text;
+            UpdateEditorDiff(leftEditor, rightEditor);
+        };
+
+        UpdateEditorDiff(leftEditor, rightEditor);
+
+        leftEditor.Focus();
+    }
+
+    private void UpdateEditorDiff(TextEditor leftEditor, TextEditor rightEditor)
+    {
+        var leftLines = (leftEditor.Text ?? "")
+            .Replace("\r\n", "\n")
+            .Split('\n');
+
+        var rightLines = (rightEditor.Text ?? "")
+            .Replace("\r\n", "\n")
+            .Split('\n');
+
+        var diff = _diffEngine.Compare(leftLines, rightLines);
+
+        _leftRenderer?.SetDiffLines(diff);
+        _rightRenderer?.SetDiffLines(diff);
+
+        leftEditor.TextArea.TextView.InvalidateVisual();
+        rightEditor.TextArea.TextView.InvalidateVisual();
     }
 
     private void ConnectScrollSync()
