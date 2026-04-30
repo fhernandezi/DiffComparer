@@ -649,35 +649,10 @@ namespace DiffComparer.Core
 
         private static List<string> Tokenize(string text)
         {
-            var tokens = new List<string>();
-
             if (string.IsNullOrEmpty(text))
-                return tokens;
+                return new List<string>();
 
-            var current = "";
-            TokenKind? currentKind = null;
-
-            foreach (char c in text)
-            {
-                var kind = GetTokenKind(c);
-
-                if (currentKind == null || kind == currentKind)
-                {
-                    current += c;
-                    currentKind = kind;
-                }
-                else
-                {
-                    tokens.Add(current);
-                    current = c.ToString();
-                    currentKind = kind;
-                }
-            }
-
-            if (current.Length > 0)
-                tokens.Add(current);
-
-            return tokens;
+            return text.Select(c => c.ToString()).ToList();
         }
 
         private static string TrimForSimilarity(string value, int max = 200)

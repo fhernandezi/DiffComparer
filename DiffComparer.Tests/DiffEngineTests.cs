@@ -134,14 +134,24 @@ namespace DiffComparer.Tests
         }
 
         [Fact]
-        public void WordDiff_WhenOneWordChanges_MarksChangedSegment()
+        public void WordDiff_WhenCharactersAreDeleted_MarksOnlyDeletedCharacters()
         {
             var result = DiffEngine.WordDiff(
                 "Nombre: Pedrito",
                 "Nombre: Pedro");
 
-            Assert.Contains(result.Left, x => x.IsChanged);
-            Assert.Contains(result.Right, x => x.IsChanged);
+            var changedLeft = string.Concat(
+                result.Left
+                    .Where(x => x.IsChanged)
+                    .Select(x => x.Text));
+
+            var changedRight = string.Concat(
+                result.Right
+                    .Where(x => x.IsChanged)
+                    .Select(x => x.Text));
+
+            Assert.Equal("it", changedLeft);
+            Assert.Equal("", changedRight);
         }
 
         [Fact]
@@ -292,14 +302,24 @@ namespace DiffComparer.Tests
         }
 
         [Fact]
-        public void WordDiff_WhenOnlyNumberChanges_MarksNumberAsChanged()
+        public void WordDiff_WhenOnlyNumberChanges_MarksOnlyChangedDigit()
         {
             var result = DiffEngine.WordDiff(
                 "Total: 100",
                 "Total: 120");
 
-            Assert.Contains(result.Left, x => x.Text == "100" && x.IsChanged);
-            Assert.Contains(result.Right, x => x.Text == "120" && x.IsChanged);
+            var changedLeft = string.Concat(
+                result.Left
+                    .Where(x => x.IsChanged)
+                    .Select(x => x.Text));
+
+            var changedRight = string.Concat(
+                result.Right
+                    .Where(x => x.IsChanged)
+                    .Select(x => x.Text));
+
+            Assert.Equal("0", changedLeft);
+            Assert.Equal("2", changedRight);
         }
 
         [Fact]
@@ -350,6 +370,48 @@ namespace DiffComparer.Tests
 
             Assert.Equal(3, result.Count);
             Assert.All(result, x => Assert.Equal(LineStatus.Deleted, x.Status));
+        }
+
+        [Fact]
+        public void WordDiff_WhenCharacterIsAdded_MarksOnlyAddedCharacter()
+        {
+            var result = DiffEngine.WordDiff(
+                "hola",
+                "holan");
+
+            var changedLeft = string.Concat(
+                result.Left
+                    .Where(x => x.IsChanged)
+                    .Select(x => x.Text));
+
+            var changedRight = string.Concat(
+                result.Right
+                    .Where(x => x.IsChanged)
+                    .Select(x => x.Text));
+
+            Assert.Equal("", changedLeft);
+            Assert.Equal("n", changedRight);
+        }
+
+        [Fact]
+        public void WordDiff_WhenCharacterIsReplaced_MarksOnlyReplacedCharacter()
+        {
+            var result = DiffEngine.WordDiff(
+                "hola",
+                "hila");
+
+            var changedLeft = string.Concat(
+                result.Left
+                    .Where(x => x.IsChanged)
+                    .Select(x => x.Text));
+
+            var changedRight = string.Concat(
+                result.Right
+                    .Where(x => x.IsChanged)
+                    .Select(x => x.Text));
+
+            Assert.Equal("o", changedLeft);
+            Assert.Equal("i", changedRight);
         }
     }
 }

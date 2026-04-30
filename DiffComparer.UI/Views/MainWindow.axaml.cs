@@ -16,7 +16,8 @@ public partial class MainWindow : Window
 
     private DiffLineBackgroundRenderer? _leftRenderer;
     private DiffLineBackgroundRenderer? _rightRenderer;
-    private bool _isUpdatingVisualText = false;
+    private DiffWordColorizer? _leftWordColorizer;
+    private DiffWordColorizer? _rightWordColorizer;
     public MainWindow()
     {
         InitializeComponent();
@@ -60,6 +61,12 @@ public partial class MainWindow : Window
         leftEditor.TextArea.TextView.BackgroundRenderers.Add(_leftRenderer);
         rightEditor.TextArea.TextView.BackgroundRenderers.Add(_rightRenderer);
 
+        _leftWordColorizer = new DiffWordColorizer(isLeftSide: true);
+        _rightWordColorizer = new DiffWordColorizer(isLeftSide: false);
+
+        leftEditor.TextArea.TextView.LineTransformers.Add(_leftWordColorizer);
+        rightEditor.TextArea.TextView.LineTransformers.Add(_rightWordColorizer);
+
         leftEditor.TextChanged += (_, _) =>
         {
             vm.LeftText = leftEditor.Text;
@@ -92,8 +99,11 @@ public partial class MainWindow : Window
         _leftRenderer?.SetDiffLines(diff);
         _rightRenderer?.SetDiffLines(diff);
 
-        leftEditor.TextArea.TextView.InvalidateVisual();
-        rightEditor.TextArea.TextView.InvalidateVisual();
+        _leftWordColorizer?.SetDiffLines(diff);
+        _rightWordColorizer?.SetDiffLines(diff);
+
+        leftEditor.TextArea.TextView.Redraw();
+        rightEditor.TextArea.TextView.Redraw();
     }
 
     private void ConnectScrollSync()
