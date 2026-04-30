@@ -17,86 +17,131 @@
 
 	<DockPanel>
 
-		<!-- Toolbar -->
-		<StackPanel DockPanel.Dock="Top"
-                    Orientation="Horizontal"
-                    Spacing="8"
-                    Margin="10,8,10,8">
+		<!-- Barra superior -->
+		<DockPanel DockPanel.Dock="Top"
+                   Background="#252526">
 
-			<Button Content="Abrir izquierda"
-                    Command="{Binding OpenLeftFileCommand}"
-                    IsVisible="{Binding IsEditMode}"/>
+			<!-- Menú principal -->
+			<Menu DockPanel.Dock="Top"
+                  Background="#252526"
+                  Foreground="White">
 
-			<Button Content="Abrir derecha"
-                    Command="{Binding OpenRightFileCommand}"
-                    IsVisible="{Binding IsEditMode}"/>
+				<MenuItem Header="_Archivo">
+					<MenuItem Header="Abrir izquierda..."
+                              Command="{Binding OpenLeftFileCommand}"
+                              IsEnabled="{Binding IsEditMode}" />
 
-			<Button Content="↑ Cambio"
-                    Command="{Binding PreviousChangeCommand}"
-                    IsVisible="{Binding !IsEditMode}"/>
+					<MenuItem Header="Abrir derecha..."
+                              Command="{Binding OpenRightFileCommand}"
+                              IsEnabled="{Binding IsEditMode}" />
 
-			<Button Content="↓ Cambio"
-                    Command="{Binding NextChangeCommand}"
-                    IsVisible="{Binding !IsEditMode}"/>
+					<Separator />
 
-			<Button Content="Comparar"
-                    Command="{Binding CompareCommand}"
-                    IsVisible="{Binding IsEditMode}"
-                    IsEnabled="{Binding !IsComparing}"/>
+					<MenuItem Header="Comparar"
+                              Command="{Binding CompareCommand}"
+                              IsEnabled="{Binding !IsComparing}"
+                              IsVisible="{Binding IsEditMode}" />
 
-			<Button Content="Editar"
-                    Command="{Binding EditCommand}"
-                    IsVisible="{Binding !IsEditMode}"/>
+					<MenuItem Header="Editar"
+                              Command="{Binding EditCommand}"
+                              IsVisible="{Binding !IsEditMode}" />
+				</MenuItem>
 
-			<Button Content="Cancelar"
-                    Command="{Binding CompareCancelCommand}"
-                    IsVisible="{Binding IsComparing}"
-                    Margin="8,0,0,0"/>
+				<MenuItem Header="_Navegar"
+                          IsVisible="{Binding !IsEditMode}">
 
-			<TextBlock Text="Comparando..."
-                       IsVisible="{Binding IsComparing}"
-                       VerticalAlignment="Center"
-                       Foreground="Gray"/>
+					<MenuItem Header="Cambio anterior"
+                              Command="{Binding PreviousChangeCommand}" />
 
-			<TextBlock Text="{Binding StatsText}"
-                       IsVisible="{Binding !IsEditMode}"
-                       VerticalAlignment="Center"
-                       Foreground="Gray"
-                       Margin="16,0,0,0"/>
+					<MenuItem Header="Cambio siguiente"
+                              Command="{Binding NextChangeCommand}" />
+				</MenuItem>
 
-		</StackPanel>
+			</Menu>
+
+			<!-- Toolbar rápido -->
+			<StackPanel DockPanel.Dock="Top"
+                        Orientation="Horizontal"
+                        Spacing="8"
+                        Margin="10,6,10,8">
+
+				<Button Content="📂 Izquierda"
+                        Command="{Binding OpenLeftFileCommand}"
+                        IsVisible="{Binding IsEditMode}" />
+
+				<Button Content="📂 Derecha"
+                        Command="{Binding OpenRightFileCommand}"
+                        IsVisible="{Binding IsEditMode}" />
+
+				<Button Content="Comparar"
+                        Command="{Binding CompareCommand}"
+                        IsVisible="{Binding IsEditMode}"
+                        IsEnabled="{Binding !IsComparing}" />
+
+				<Button Content="Editar"
+                        Command="{Binding EditCommand}"
+                        IsVisible="{Binding !IsEditMode}" />
+
+				<Button Content="↑ Cambio"
+                        Command="{Binding PreviousChangeCommand}"
+                        IsVisible="{Binding !IsEditMode}" />
+
+				<Button Content="↓ Cambio"
+                        Command="{Binding NextChangeCommand}"
+                        IsVisible="{Binding !IsEditMode}" />
+
+				<Button Content="Cancelar"
+                        Command="{Binding CompareCancelCommand}"
+                        IsVisible="{Binding IsComparing}"
+                        Margin="8,0,0,0" />
+
+				<TextBlock Text="Comparando..."
+                           IsVisible="{Binding IsComparing}"
+                           VerticalAlignment="Center"
+                           Foreground="Gray" />
+
+				<TextBlock Text="{Binding StatsText}"
+                           IsVisible="{Binding !IsEditMode}"
+                           VerticalAlignment="Center"
+                           Foreground="Gray"
+                           Margin="16,0,0,0" />
+
+			</StackPanel>
+
+		</DockPanel>
 
 		<!-- Paneles principales -->
 		<Grid ColumnDefinitions="*,4,*"
-			  Margin="10,0,10,10">
+              Margin="10,0,10,10">
 
 			<edit:TextEditor Name="LeftEditor"
-							 Grid.Column="0"
-							 IsReadOnly="False"
-							 Focusable="True"
-							 FontFamily="Cascadia Code,Consolas,monospace"
-							 FontSize="13"
-							 Background="#1e1e1e"
-							 Foreground="White"
-							 ShowLineNumbers="True"
-							 HorizontalScrollBarVisibility="Auto"
-							 VerticalScrollBarVisibility="Auto"/>
+                             Grid.Column="0"
+                             IsReadOnly="False"
+                             Focusable="True"
+                             FontFamily="Cascadia Code,Consolas,monospace"
+                             FontSize="13"
+                             Background="#1e1e1e"
+                             Foreground="White"
+                             ShowLineNumbers="True"
+                             HorizontalScrollBarVisibility="Auto"
+                             VerticalScrollBarVisibility="Auto"/>
 
 			<Rectangle Grid.Column="1"
-					   Fill="#333333"/>
+                       Fill="#333333"/>
 
 			<edit:TextEditor Name="RightEditor"
-							 Grid.Column="2"
-							 IsReadOnly="False"
-							 Focusable="True"
-							 FontFamily="Cascadia Code,Consolas,monospace"
-							 FontSize="13"
-							 Background="#1e1e1e"
-							 Foreground="White"
-							 ShowLineNumbers="True"
-							 HorizontalScrollBarVisibility="Auto"
-							 VerticalScrollBarVisibility="Auto"/>
+                             Grid.Column="2"
+                             IsReadOnly="False"
+                             Focusable="True"
+                             FontFamily="Cascadia Code,Consolas,monospace"
+                             FontSize="13"
+                             Background="#1e1e1e"
+                             Foreground="White"
+                             ShowLineNumbers="True"
+                             HorizontalScrollBarVisibility="Auto"
+                             VerticalScrollBarVisibility="Auto"/>
 
 		</Grid>
+
 	</DockPanel>
 </Window>
