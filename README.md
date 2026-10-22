@@ -1,48 +1,65 @@
 # DiffComparer
 
-A .NET 10 / Avalonia text and source-code comparison tool focused on readable alignment.
+A desktop app for comparing and editing text or source code side by side. Differences update as you type, and you can copy complete sections in either direction without leaving the editors.
 
-See [the Spanish guide](README.es.md) for the complete workflow, shortcuts, performance strategy and limitations.
+Built with **.NET 10** and **Avalonia**. The interface is currently in **Spanish**.
 
-## Interface
+[Guía en español](README.es.md) · [Engine architecture](docs/ENGINE_IMPLEMENTATION.es.md) · [Interface design](docs/UI_DESIGN.es.md)
 
-Material Design 3-inspired presentation on Avalonia, with light/dark/system appearance, plain-language Spanish tooltips, a compact layout, resizable editor panels and secondary settings in a dismissible overlay. Clear, swap and reset actions offer one-step text/settings recovery. Copy result copies the complete right document to the clipboard. The comparison engine is unchanged. See [UI design decisions and verification](docs/UI_DESIGN.es.md).
+![DiffComparer showing added, deleted and modified lines in dark mode](docs/images/comparison-dark.png)
+
+*Dark mode. [View the light-mode example](docs/images/comparison-light.png).*
 
 ## Features
 
-- Always-editable side-by-side text editors with file loading, detected encoding, line-ending metadata and full-path tooltips.
-- Automatic background comparison after a 250 ms typing pause, with green additions, red deletions and yellow modifications and cancellation of obsolete calculations.
-- Exact content comparison by default; optional whitespace normalization and line-ending comparison. Final newline changes are always detected.
-- Readable anchor-based or minimal Myers line alignment; exact Unicode grapheme highlighting, including long and split/joined lines.
-- Bidirectional hunk-copy arrows with snapshot/version validation, automatic recomputation and undo/redo.
-- Save either real document while preserving its encoding, BOM and line endings.
-- Original source documents and line numbers; highlighting updates preserve the caret, selection and native undo history.
-- Added/deleted/modified line totals and circular change-block navigation (F7 / Shift+F7).
-- Filters for difference highlighting, search and navigation, with configurable context and conservative moved-text detection. Text outside the selected context is dimmed; the complete editable text remains visible.
-- Debounced search across both visible panels (Ctrl+F, F3 / Shift+F3), with an optional matching-text filter.
-- Per-block review tracking, visible review/final-newline markers beside source line numbers, and an unreviewed-only filter.
-- Syntax highlighting and visible whitespace.
-- Full HTML reports with review information and exact-content unified patch exports, independent of UI filters.
+- **Compare while editing.** Both panels remain editable. Comparison runs automatically after a 250 ms typing pause, preserving the caret, selection and undo history.
+- **Understand each change.** Green marks added lines, red marks deleted lines and yellow marks modified lines. Changed fragments, section brackets and original line numbers help locate the differences.
+- **Copy complete sections.** Apply changes from either side, undo or redo copies, and reject actions based on outdated comparisons.
+- **Focus your review.** Search both texts, filter change types, adjust surrounding context and mark sections as reviewed. The complete editable text remains available.
+- **Work comfortably.** Light, dark and system appearance; resizable panels; keyboard shortcuts; and plain-language tooltips. The presentation is inspired by Material Design 3.
+- **Open and save files.** Detect encoding and line endings, choose another encoding when needed, and save either document with its encoding and newline style.
+- **Recover from mistakes.** Clear a panel, swap texts or reset the workspace, with one-step recovery of the previous texts and options. Copy the complete right-hand result to the clipboard.
+- **Share the comparison.** Export a complete HTML report or a unified patch, independently of the active display filters.
 
-## Run and test
+## Run from source
 
-Install the .NET 10 SDK, then:
+Install the .NET 10 SDK, then run this command from the repository root:
 
 ```powershell
 dotnet run --project DiffComparer.UI
+```
+
+Open a file in each panel or paste your texts. The **left panel is the original**; the right panel is the version being compared. Differences appear automatically. The arrows between the panels copy the entire section indicated by the brackets.
+
+See the [Spanish guide](README.es.md) for comparison options, shortcuts, saving and exports.
+
+## Tests
+
+```powershell
 dotnet test DiffComparer.slnx -c Release
 ```
 
-Tests cover engine invariants, cancellation, filtering, encoding validation, exports and headless window interactions. `PerformanceSmokeTests` exercises 20,000 lines. Set `DIFFCOMPARER_TEST_ARTIFACTS` to an output directory to save a UI screenshot, measurements and patch examples.
+Tests cover the comparison engine, cancellation, file encodings, copy validation, undo/redo, filters, exports and rendered Avalonia windows. UI tests also check themes, contrast, compact layouts, tooltips and workspace recovery; file dialogs and clipboard operations use simulated services.
 
-## Responsiveness
+`PerformanceSmokeTests` exercises 20,000 lines. To save screenshots, measurements and patch examples:
 
-Comparison, decoding, filtering, search and report generation run in the background. Views are published in one update, outdated filter/search jobs are cancelled, and drawing uses row indices and reusable brushes. Anchor selection uses an O(n log n) increasing subsequence.
+```powershell
+$env:DIFFCOMPARER_TEST_ARTIFACTS = Join-Path $PWD 'artifacts'
+dotnet test DiffComparer.slnx -c Release
+```
 
-Bidirectional Myers uses linear frontier memory. Weighted line pairing uses a band for large replacement regions, independently of exact edit ranges. Long-line refinement has no arbitrary coarse-character cutoff. Recalculation uses immutable document snapshots and validates revisions before publishing; it is currently a full cancellable recomputation. See [architecture and provenance](docs/ENGINE_IMPLEMENTATION.es.md).
+## Comparison engine
 
-## Scope
+The engine combines readable anchors or minimal Myers line comparison with Unicode grapheme refinement. Editable documents, comparison results and filtered views are kept separate. Background calculations use immutable snapshots and validate document versions before publishing results or applying copies.
 
-Moved-text detection marks only identical, unambiguous candidates. Review state is retained across recalculation only for unique unchanged blocks and immediate context. Patches use a single full-context unified hunk, normalize line-ending style and preserve the presence of a final newline. Saving requires an explicit destination.
+Comparison, decoding, filtering, search and report generation run in the background. Recalculation currently recomputes the complete comparison and cancels outdated work; very dissimilar inputs can still be expensive.
 
-Folder comparison, three-way merge, incremental recomputation, semantic parsing, persistent sessions and drag-and-drop are future work. Very dissimilar inputs may still be computationally expensive.
+Algorithm details, performance tradeoffs and references are documented in the [engine implementation guide](docs/ENGINE_IMPLEMENTATION.es.md).
+
+## Current limitations
+
+- Comparison is textual; it does not interpret the meaning of code or structured data.
+- Moved-text detection recognizes only identical, unambiguous sections. Review marks survive recalculation only when their content and immediate context remain uniquely identifiable.
+- Patches use one full-context unified hunk, normalize newline style and preserve whether a final newline is present. They are not binary patches.
+- Workspace recovery keeps only the most recent clear, swap or reset snapshot. Sessions and review state are not persisted between app runs.
+- Folder comparison, three-way merge, incremental recomputation and drag-and-drop are not currently supported.
