@@ -1,57 +1,54 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Media;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Rendering;
 using DiffComparer.Core;
+using DiffComparer.UI.Models;
 
 namespace DiffComparer.UI.Renderers;
 
 public sealed class DiffWordColorizer : DocumentColorizingTransformer
 {
     private readonly bool _isLeftSide;
-    private IReadOnlyList<LineMap> _diffLines = Array.Empty<LineMap>();
+    private IReadOnlySet<int>? _focusLines;
+    public bool IsDarkTheme { get; set; } = true;
+    public void SetFocusLines(IReadOnlySet<int>? lines) => _focusLines = lines;
+    private IReadOnlyDictionary<int, LineMap> _diffLines = new Dictionary<int, LineMap>();
 
-    private static readonly IBrush ChangedBackground =
-        new SolidColorBrush(Color.FromArgb(130, 255, 180, 80));
+    private IReadOnlyDictionary<int, SearchHit[]> _hits = new Dictionary<int, SearchHit[]>();
 
-    private static readonly IBrush ChangedForeground =
-        Brushes.White;
+    public void SetSearchHits(IReadOnlyDictionary<int, SearchHit[]> hits) => _hits = hits;
 
     public DiffWordColorizer(bool isLeftSide)
     {
         _isLeftSide = isLeftSide;
     }
 
-    public void SetDiffLines(IReadOnlyList<LineMap> diffLines)
+    public void SetDiffLines(IReadOnlyList<LineMap> diffLines, bool sourceLineNumbers = false)
     {
-        _diffLines = diffLines;
+        _diffLines = diffLines.Select((line, index) => (Line: line, Index: sourceLineNumbers
+            ? (_isLeftSide ? line.LeftLine : line.RightLine) : index))
+            .Where(x => x.Index.HasValue).ToDictionary(x => x.Index!.Value, x => x.Line);
     }
 
     protected override void ColorizeLine(DocumentLine line)
     {
-        if (_diffLines.Count == 0)
-            return;
-
         int editorLineIndex = line.LineNumber - 1;
-
-        var diffLine = _isLeftSide
-            ? _diffLines.FirstOrDefault(x => x.LeftLine == editorLineIndex)
-            : _diffLines.FirstOrDefault(x => x.RightLine == editorLineIndex);
-
-        if (diffLine is null)
+        if (_focusLines is not null && !_focusLines.Contains(editorLineIndex))
+        {
+            if (line.Length > 0) ChangeLinePart(line.Offset, line.EndOffset,
+                element => element.TextRunProperties.SetForegroundBrush(DiffPalette.Muted(IsDarkTheme)));
             return;
+        }
 
-        if (diffLine.Status != LineStatus.Modified)
-            return;
+        if (!_diffLines.TryGetValue(editorLineIndex, out var diffLine)) return;
 
         var segments = _isLeftSide
             ? diffLine.LeftSegments
             : diffLine.RightSegments;
 
-        if (segments.Count == 0)
-            return;
 
         int currentOffset = line.Offset;
         int lineEndOffset = line.EndOffset;
@@ -66,15 +63,15 @@ public sealed class DiffWordColorizer : DocumentColorizingTransformer
             int startOffset = currentOffset;
             int endOffset = Math.Min(currentOffset + segmentLength, lineEndOffset);
 
-            if (segment.IsChanged && startOffset < endOffset)
+            if (diffLine.Status != LineStatus.Equal && segment.IsChanged && startOffset < endOffset)
             {
                 ChangeLinePart(
                     startOffset,
                     endOffset,
                     element =>
                     {
-                        element.TextRunProperties.SetBackgroundBrush(ChangedBackground);
-                        element.TextRunProperties.SetForegroundBrush(ChangedForeground);
+                        element.TextRunProperties.SetBackgroundBrush(DiffPalette.Fragment(diffLine.Status, IsDarkTheme));
+                        element.TextRunProperties.SetForegroundBrush(DiffPalette.Foreground(IsDarkTheme));
                     });
             }
 
@@ -83,5 +80,16 @@ public sealed class DiffWordColorizer : DocumentColorizingTransformer
             if (currentOffset >= lineEndOffset)
                 break;
         }
+        if (_hits.TryGetValue(editorLineIndex, out var hits))
+            foreach (var hit in hits)
+            {
+                int start = line.Offset + hit.Column;
+                int end = Math.Min(line.EndOffset, start + hit.Length);
+                if (start < end) ChangeLinePart(start, end, element =>
+                {
+                    element.TextRunProperties.SetBackgroundBrush(DiffPalette.Search(IsDarkTheme));
+                    element.TextRunProperties.SetForegroundBrush(DiffPalette.Foreground(IsDarkTheme));
+                });
+            }
     }
 }

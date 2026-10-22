@@ -1,131 +1,86 @@
 # DiffComparer
 
-Una herramienta de comparación de texto enfocada en la **legibilidad humana**, no solo en la mínima cantidad de cambios.
+Comparador de texto y código en .NET 10 y Avalonia. Permite analizar diferencias, copiar bloques entre paneles y guardar el resultado con una alineación legible.
 
-A diferencia de los diff tradicionales, este proyecto prioriza una alineación estable y clara, haciendo que las diferencias sean más fáciles de entender de un vistazo.
+## Interfaz y apariencia
 
----
+El selector superior permite elegir Claro, Oscuro o Sistema. Los dos textos permanecen editables; las ayudas explican cada acción al pasar el puntero. Las opciones menos frecuentes están en **Opciones de comparación y vista**; **Listo** o **Esc** cierran ese panel.
 
-## ✨ Características
+Cada lado permite abrir, guardar, limpiar y copiar su texto. **Copiar resultado** copia todo el panel derecho al portapapeles. **Intercambiar** cambia los textos de lado; **Restablecer** vacía ambos y devuelve las opciones iniciales. **Recuperar textos** restaura los textos y opciones anteriores a la última de estas acciones. No modifica los archivos guardados.
 
-- 🔍 Motor de comparación basado en líneas  
-- 🧠 Alineación basada en anclas (reduce ruido en el diff)  
-- ⚡ Uso del algoritmo de Myers como respaldo para comparaciones precisas  
-- ✏️ Resaltado de diferencias a nivel de palabra  
-- 📂 Apertura y comparación de archivos reales  
-- 🖥️ Interfaz limpia tipo lado a lado (Avalonia)  
+El diseño adapta los principios de Material Design 3 y las heurísticas de Nielsen a Avalonia. Decisiones, referencias, pruebas y límites: [diseño de interfaz](docs/UI_DESIGN.es.md).
 
----
+## Comparar y analizar
 
-## 🎯 Filosofía
+1. Abre los archivos izquierdo y derecho o pega texto en los editores. Cada cabecera muestra el nombre, la codificación y los finales de línea; la ruta completa aparece al pasar el cursor.
+2. La lectura automática reconoce BOM de UTF-8, UTF-16 y UTF-32; sin BOM usa UTF-8 estricto. Si el archivo utiliza otra codificación, selecciona UTF-16 o Windows-1252 antes de abrirlo. Los errores de decodificación se muestran sin sustituir silenciosamente caracteres.
+3. Por defecto se compara el contenido exacto, incluidos los espacios. **Ignorar espacios** activa la normalización de espacios y tabulaciones, incluso dentro de cadenas. **Comparar EOL** incluye diferencias CRLF/LF/CR; la presencia del salto final siempre se compara. **Legible** utiliza anclas y Myers; **Mínimo** minimiza inserciones y eliminaciones de líneas.
+4. Ambos paneles permanecen editables. Las diferencias se actualizan automáticamente tras una pausa de 250 ms al escribir, pegar o cambiar las opciones. Las líneas agregadas tienen fondo verde; las eliminadas, rojo; las modificadas, amarillo. Los fragmentos cambiados usan un tono más intenso del mismo color. La izquierda se considera el original. No se insertan filas vacías ni se mueve el cursor al actualizar.
+5. La barra inferior muestra líneas agregadas, eliminadas y modificadas, además de los bloques movidos detectados. Un bloque agrupa cambios consecutivos; no equivale a una línea modificada.
 
-La mayoría de herramientas diff optimizan para:
+## Vista y revisión
 
-- Minimizar el número de cambios
+- **Resaltar solo diferencias:** atenúa el texto fuera de los cambios y su contexto, y limita la búsqueda y la navegación a esa selección. El control Contexto permite ampliar el texto destacado alrededor de los cambios. Los documentos completos siguen visibles y editables.
+- **Agregadas / Eliminadas / Modificadas:** filtran los tipos visibles sin alterar los totales globales. El contexto no vuelve a mostrar tipos excluidos.
+- **Solo movidas:** muestra movimientos de texto idéntico y sin ambigüedad, identificados como agregados y eliminados. Los movimientos conservan sus filas de eliminación e inserción y no se cuentan como una categoría adicional de líneas.
+- **Buscar:** busca sin distinguir mayúsculas en ambos paneles visibles. **Resaltar coincidencias** limita el resaltado y la navegación al texto encontrado y su contexto. Los resultados se limitan a 50.000, con aviso cuando se alcanza el límite.
+- **Marcar revisado:** registra la revisión del bloque actual y muestra ✓ junto a sus números de línea; **Sin revisar** permite trabajar con los pendientes. Al recalcular se conserva únicamente para bloques únicos cuyo contenido y contexto inmediato no cambiaron. Se incluye en el informe HTML.
+- **Espacios visibles:** muestra espacios, tabulaciones y finales de línea. El selector de lenguaje aplica resaltado de sintaxis; **Automático** usa la extensión del archivo.
 
-Este proyecto optimiza para:
+| Atajo | Acción |
+| --- | --- |
+| F7 / Shift+F7 | Bloque siguiente / anterior, entre los visibles |
+| Ctrl+F | Enfocar la búsqueda |
+| F3 / Shift+F3 | Coincidencia siguiente / anterior, en ambos paneles |
+| Ctrl+Z / Ctrl+Y | Deshacer / rehacer en el editor enfocado, incluidas las copias |
 
-- Maximizar la legibilidad para humanos
+Los botones **Deshacer/Rehacer** permiten revertir copias y, cuando no hay copias pendientes en el historial, las ediciones del último panel enfocado. Los atajos Ctrl+Z/Ctrl+Y actúan directamente sobre el editor enfocado.
 
-👉 Esto significa:
+La navegación es circular y usa las líneas originales de cada documento. Los filtros afectan el resaltado y la navegación; no ocultan ni sustituyen el texto editable.
 
-- Menos “saltos” en las líneas  
-- Alineación más estable  
-- Cambios visuales más claros  
+## Copiar y guardar
 
----
+Las flechas centrales copian el bloque completo en la dirección indicada; las de la barra actúan sobre el bloque seleccionado. Cada copia es una operación reversible y recalcula el diff en segundo plano. Se validan la identidad y revisión de ambos documentos antes de modificar texto. Una flecha antigua o un bloque parcialmente oculto por filtros no puede aplicarse.
 
-## 🧪 Ejemplo
+Por defecto se conserva el estilo de saltos de línea del destino. Desactiva **Conservar EOL destino** para copiar los terminadores de origen; **Comparar EOL** siempre los copia. El símbolo ¶ junto al número de línea señala cambios de terminador o del salto final.
 
-En lugar de desordenar todo al insertar una línea:
-A
-B
-C
+**Guardar izq./der. como…** guarda el documento real, sin filas de alineación ni filtros. Conserva codificación, BOM y saltos de línea; el texto pegado se guarda como UTF-8 sin BOM. La codificación se valida antes de abrir el destino. Cancelar o fallar no marca el documento como guardado.
 
-vs
+## Exportar
 
-A
-X
-B
-C
+- **Informe HTML:** comparación completa, números originales, reglas aplicadas, movimientos y revisión. El contenido se escapa para no ejecutar texto de los archivos como HTML.
+- **Parche:** unified diff del contenido completo, independiente de filtros y de la opción de ignorar espacios. Conserva si existe un salto final. Utiliza un único bloque con todo el contexto y normaliza el estilo de finales de línea; no es una comparación binaria.
 
-Este motor mantiene la alineación estable:
+Las exportaciones solicitan un archivo de destino y nunca escriben sobre los archivos comparados por iniciativa propia.
 
-A
--X
-B
-C
+## Rendimiento
 
+- Comparación, carga/decodificación, proyección de filtros, búsqueda y preparación de informes en segundo plano.
+- Publicación de una vista completa por actualización, sin notificaciones por cada línea.
+- Búsqueda con espera breve y cancelación de solicitudes anteriores para evitar resultados obsoletos.
+- Índices de dibujo y búsqueda por fila, pinceles reutilizados y renderizado de las líneas visibles de AvaloniaEdit.
+- Anclas monótonas en O(n log n) y Myers bidireccional con memoria lineal para el guion de cambios.
+- Emparejamiento ponderado y monótono de líneas; usa una banda en bloques grandes para limitar el coste de presentación sin alterar los rangos exactos de copia.
+- Refinamiento exacto por grafemas Unicode, también en líneas largas y divisiones/uniones de líneas; sin recorte arbitrario del tramo central.
+- Documentos independientes de la vista, capturas inmutables y publicación validada por versión. El recálculo es completo y cancelable; todavía no es incremental.
 
----
+Arquitectura, referencias y límites: [motor implementado](docs/ENGINE_IMPLEMENTATION.es.md).
 
-## 🏗️ Cómo funciona (simplificado)
+## Compilar y probar
 
-1. Detecta líneas ancla (coincidencias exactas o similares)  
-2. Divide el texto en segmentos estables  
-3. Aplica el algoritmo de Myers dentro de cada segmento  
-4. Realiza comparación a nivel de palabra en líneas modificadas  
+Requiere el SDK de .NET 10.
 
----
+```powershell
+dotnet run --project DiffComparer.UI
+dotnet test DiffComparer.slnx -c Release
+```
 
-## 🚀 Primeros pasos
+Las pruebas incluyen motor, filtros, revisión, codificaciones, exportaciones y ventanas con Avalonia Headless. No necesitan abrir ventanas del escritorio. La prueba `PerformanceSmokeTests` mide una comparación de 20.000 líneas; sus tiempos dependen del equipo.
 
-### Requisitos
+Opcionalmente, define `DIFFCOMPARER_TEST_ARTIFACTS` con una carpeta de salida para guardar una captura, mediciones y ejemplos de parches al ejecutar las pruebas.
 
-- .NET (última versión recomendada)  
-- Avalonia UI  
+## Alcance y límites
 
----
+El análisis es textual: no interpreta semánticamente código, JSON ni XML. La detección conservadora de movimientos no intenta adivinar bloques repetidos o movidos con ediciones. Los textos modificados en el editor no se guardan automáticamente y las revisiones no persisten entre sesiones.
 
-## 📸 Interfaz
-
-Abrir archivo izquierdo/derecho
-Comparación instantánea
-Diferencias visuales con colores:
-🟢 Agregado
-🔴 Eliminado
-🟡 Modificado
-
----
-
-## 🧠 Roadmap
-
-Navegación entre cambios
-Modo “mostrar solo diferencias”
-Soporte drag & drop
-Optimización de rendimiento
-Detección de bloques movidos
-Herramienta de merge (futuro)
-
----
-
-## ⚠️ Limitaciones conocidas
-
-Bloques grandes movidos se interpretan como eliminación + inserción
-Rendimiento no optimizado para archivos muy grandes
-No incluye funcionalidad de merge (aún)
-
----
-
-## 💡 ¿Por qué este proyecto?
-
-Este proyecto nace como un experimento para explorar:
-
-Algoritmos de diff (Myers, LCS)
-Estrategias heurísticas de alineación
-Diseño de UI/UX en herramientas para desarrolladores
-
----
-
-## 🤝 Contribuciones
-
-Se agradece cualquier feedback o idea.
-
-Si encuentras un caso donde el diff sea confuso o incorrecto, abre un issue.
-
----
-
-## 📜 Licencia
-
-MIT
-
+Quedan para una etapa posterior: comparación de carpetas, merge de tres versiones con ancestro común, recálculo incremental, sesiones persistentes y arrastrar archivos. Las entradas con muy pocas coincidencias pueden seguir siendo costosas: Myers no garantiza latencia constante.

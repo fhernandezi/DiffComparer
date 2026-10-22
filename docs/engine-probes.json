@@ -1,0 +1,62 @@
+{
+  "LongLine": {
+    "leftLength": 4302,
+    "totalLength": 8604,
+    "actualChangedCharacters": 2,
+    "highlightedCharacters": 2102,
+    "similarity": 100
+  },
+  "Unicode": [
+    {
+      "IsChanged": false,
+      "utf16": [
+        "D83D"
+      ]
+    },
+    {
+      "IsChanged": true,
+      "utf16": [
+        "DE00"
+      ]
+    }
+  ],
+  "GreedyPairing": {
+    "result": [
+      {
+        "status": "Added",
+        "LeftText": "",
+        "RightText": "abcxxf"
+      },
+      {
+        "status": "Modified",
+        "LeftText": "abcdef",
+        "RightText": "abcdee"
+      },
+      {
+        "status": "Deleted",
+        "LeftText": "abcdeg",
+        "RightText": ""
+      }
+    ],
+    "scores": [
+      [
+        66,
+        83
+      ],
+      [
+        50,
+        83
+      ]
+    ]
+  },
+  "BoundedHistory": {
+    "UsedCoarseAlignment": true,
+    "commonInputLines": 20,
+    "equalOutputLines": 0,
+    "reconstructedLeft": true,
+    "reconstructedRight": true
+  },
+  "ReviewedDate": "2026-10-21",
+  "CoreAssemblySHA256": "D51E995F9789B4F3BFEA9A7311D6FF5BE495B3696F4F9C0AD6EE46E11C8EE84D",
+  "EngineSourceSHA256": "1C3643CA84098A6B1461A259160E631539DE887D468AF563FA3B43B81B238126"
+}

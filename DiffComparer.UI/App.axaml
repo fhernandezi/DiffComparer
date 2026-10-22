@@ -9,8 +9,14 @@
 	</Application.DataTemplates>
 
 	<Application.Styles>
-		<FluentTheme />
+		<FluentTheme>
+            <FluentTheme.Palettes>
+                <ColorPaletteResources x:Key="Light" Accent="#415F91" />
+                <ColorPaletteResources x:Key="Dark" Accent="#AAC7FF" />
+            </FluentTheme.Palettes>
+        </FluentTheme>
 
 		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
+	    <StyleInclude Source="avares://DiffComparer.UI/Styles/Material.axaml" />
 	</Application.Styles>
 </Application>

@@ -1,4 +1,5 @@
-﻿using DiffComparer.Tests.Fakes;
+using Avalonia.Headless.XUnit;
+using DiffComparer.Tests.Fakes;
 using DiffComparer.UI.ViewModels;
 using Xunit;
 
@@ -6,7 +7,7 @@ namespace DiffComparer.Tests;
 
 public sealed class MainWindowViewModelFileToolbarTests
 {
-    [Fact]
+    [AvaloniaFact]
     public void InitialState_ShouldStartInEditMode()
     {
         var filePicker = new FakeFilePickerService();
@@ -16,7 +17,7 @@ public sealed class MainWindowViewModelFileToolbarTests
         Assert.False(vm.IsComparing);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task OpenLeftFileCommand_ShouldSetLeftText()
     {
         var filePicker = new FakeFilePickerService
@@ -31,7 +32,7 @@ public sealed class MainWindowViewModelFileToolbarTests
         Assert.Equal("left file content", vm.LeftText);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task OpenRightFileCommand_ShouldSetRightText()
     {
         var filePicker = new FakeFilePickerService
@@ -46,7 +47,7 @@ public sealed class MainWindowViewModelFileToolbarTests
         Assert.Equal("right file content", vm.RightText);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task OpenLeftFileCommand_WhenPickerReturnsNull_ShouldNotOverwriteLeftText()
     {
         var filePicker = new FakeFilePickerService
@@ -64,7 +65,7 @@ public sealed class MainWindowViewModelFileToolbarTests
         Assert.Equal("previous left text", vm.LeftText);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task CompareCommand_ShouldLeaveEditMode()
     {
         var filePicker = new FakeFilePickerService();
@@ -79,7 +80,7 @@ public sealed class MainWindowViewModelFileToolbarTests
         Assert.False(vm.IsEditMode);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void EditCommand_ShouldReturnToEditMode()
     {
         var filePicker = new FakeFilePickerService();
@@ -92,7 +93,7 @@ public sealed class MainWindowViewModelFileToolbarTests
         Assert.True(vm.IsEditMode);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void CompareCancelCommand_ShouldExist()
     {
         var filePicker = new FakeFilePickerService();

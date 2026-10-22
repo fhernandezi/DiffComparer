@@ -13,6 +13,10 @@ public record LineMap(
     int Similarity
 )
 {
+    public int? MoveId { get; init; }
+    public int? HunkId { get; init; }
+    public bool HasTerminatorChange { get; init; }
+    public int? MovedPartnerLine { get; init; }
     // Muestra el número o vacío si es línea fantasma
     public string LeftLineDisplay => LeftLine.HasValue
         ? (LeftLine.Value + 1).ToString() : "";
