@@ -1,5 +1,7 @@
 # DiffComparer
 
+[Download for Windows](https://github.com/fhernandezi/DiffComparer/releases/latest)
+
 A desktop app for comparing and editing text or source code side by side. Differences update as you type, and you can copy complete sections in either direction without leaving the editors.
 
 Built with **.NET 10** and **Avalonia**. The interface is currently in **Spanish**.

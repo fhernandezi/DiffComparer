@@ -1,5 +1,7 @@
 # DiffComparer
 
+[Descargar para Windows](https://github.com/fhernandezi/DiffComparer/releases/latest)
+
 Aplicación de escritorio para comparar y editar texto o código lado a lado. Las diferencias se actualizan mientras escribes y puedes copiar secciones completas en ambas direcciones.
 
 Desarrollada con **.NET 10** y **Avalonia**, con interfaz en **español**.
