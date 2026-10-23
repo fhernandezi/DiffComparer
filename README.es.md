@@ -6,20 +6,24 @@ Aplicación de escritorio para comparar y editar texto o código lado a lado. La
 
 Desarrollada con **.NET 10** y **Avalonia**, con interfaz en **español**.
 
+Esta guía describe la **0.2.0** del repositorio. El enlace de descarga apunta a la última versión publicada.
+
 [English](README.md) · [Arquitectura del motor](docs/ENGINE_IMPLEMENTATION.es.md) · [Diseño de interfaz](docs/UI_DESIGN.es.md)
 
 ![DiffComparer mostrando líneas agregadas, eliminadas y modificadas en modo oscuro](docs/images/comparison-dark.png)
 
-*Modo oscuro. [Ver el ejemplo en modo claro](docs/images/comparison-light.png).*
+*Resaltado en modo oscuro; estas capturas muestran una distribución anterior de la barra de herramientas. [Ejemplo en modo claro](docs/images/comparison-light.png).*
 
 ## Qué puedes hacer
 
-- **Merge por secciones:** compara original y entrante mientras editas, resalta sus diferencias y permite elegir cada bloque con un check del margen. El resultado se construye debajo, en una ventana independiente. [Guía y arquitectura del merge](docs/MERGE.es.md).
+- **Merge por secciones:** original a la izquierda, entrante a la derecha y resultado debajo, en una ventana independiente. Los checks del margen permiten conservar uno de los bloques, ambos o ninguno en cada sección. [Guía y arquitectura del merge](docs/MERGE.es.md).
 - **Comparar mientras editas:** ambos textos permanecen editables y las diferencias se actualizan automáticamente.
 - **Entender los cambios:** colores suaves, fragmentos destacados, números de línea originales y corchetes que delimitan cada sección.
 - **Copiar secciones:** lleva cambios de un lado al otro y deshaz o rehace las copias.
 - **Concentrarte en la revisión:** busca, filtra los cambios y marca las secciones que ya comprobaste.
 - **Trabajar con comodidad:** temas claro, oscuro y del sistema, paneles ajustables, atajos y ayudas sencillas.
+- **Ajustar la lectura:** fuente instalada, tamaño, interlineado, ajuste de líneas y zoom compartidos entre comparador y merge, con preferencias persistentes.
+- **Encontrar las acciones:** barra de herramientas con menús Archivo, Edición, Vista, Herramientas y Ayuda, y una franja rápida de navegación, revisión y búsqueda.
 - **Abrir, guardar y compartir:** conserva la codificación de tus archivos, copia el resultado al portapapeles o exporta un informe o parche.
 - **Recuperarte de un error:** limpia un panel, intercambia los textos o restablece las opciones, con recuperación de los textos y ajustes anteriores.
 
@@ -66,23 +70,35 @@ La presentación está inspirada en Material Design 3 y aplica criterios de usab
 | Ctrl+F | Enfocar la búsqueda |
 | F3 / Shift+F3 | Coincidencia siguiente / anterior, en ambos paneles |
 | Ctrl+Z / Ctrl+Y | Deshacer / rehacer en el editor enfocado, incluidas las copias |
+| Ctrl + rueda / Ctrl + + / Ctrl + − | Cambiar el zoom con un editor enfocado |
+| Ctrl+0 | Restablecer el zoom al 100 % con un editor enfocado |
 | Esc | Cerrar el panel de opciones |
 
-Los botones **Deshacer/Rehacer** permiten revertir copias y, cuando no hay copias pendientes en el historial, las ediciones del último panel enfocado. Los atajos Ctrl+Z/Ctrl+Y actúan directamente sobre el editor enfocado.
+Las acciones **Edición → Deshacer/Rehacer** permiten revertir copias y, cuando no hay copias pendientes en el historial, las ediciones del último panel enfocado. Los atajos Ctrl+Z/Ctrl+Y actúan directamente sobre el editor enfocado.
 
 La navegación es circular y usa las líneas originales de cada documento. Los filtros afectan el resaltado y la navegación; no ocultan ni sustituyen el texto editable.
 
 ## Copiar y guardar
 
-Las flechas centrales copian el bloque completo en la dirección indicada; las de la barra actúan sobre el bloque seleccionado. Cada copia es una operación reversible y recalcula el diff en segundo plano. Se validan la identidad y revisión de ambos documentos antes de modificar texto. No se puede aplicar una copia de una comparación anterior ni una sección parcialmente excluida por los filtros.
+Las flechas centrales copian el bloque completo en la dirección indicada; **Edición → ← Copiar / Copiar →** actúa sobre el bloque seleccionado. Cada copia es una operación reversible y recalcula el diff en segundo plano. Se validan la identidad y revisión de ambos documentos antes de modificar texto. No se puede aplicar una copia de una comparación anterior ni una sección parcialmente excluida por los filtros.
 
 Por defecto se conserva el estilo de saltos de línea del destino. Desactiva **Conservar EOL destino** para copiar los terminadores de origen; **Comparar EOL** siempre los copia. El símbolo ¶ junto al número de línea señala cambios de terminador o del salto final.
 
-**Guardar izq./der. como…** guarda el documento real, sin filas de alineación ni filtros. Conserva codificación, BOM y saltos de línea; el texto pegado se guarda como UTF-8 sin BOM. La codificación se valida antes de abrir el destino. Cancelar o fallar no marca el documento como guardado.
+**Archivo → Guardar izq./der. como…** guarda el documento real, sin filas de alineación ni filtros. Conserva codificación, BOM y saltos de línea; el texto pegado se guarda como UTF-8 sin BOM. La codificación se valida antes de abrir el destino. Cancelar o fallar no marca el documento como guardado.
+
+## Combinar por secciones
+
+1. Abre **Herramientas → Merge…**. Carga o pega el original a la izquierda y el entrante a la derecha; el resultado aparece debajo. Ambos textos superiores son editables y las diferencias se recalculan tras una pausa de 250 ms.
+2. Cada sección distinta tiene un check en el margen de cada fuente. El resultado parte del original completo, con sus checks marcados y los del entrante desmarcados.
+3. Para incluir **ambos bloques**, marca el entrante sin desmarcar el original: se agrega **primero el original y después el entrante**. Para conservar solo uno, desmarca el otro. Desmarcar ambos omite la sección. El texto que coincide permanece en el resultado.
+4. **Edición** permite deshacer/rehacer selecciones o incluir ambas versiones de la sección actual. Al editar las fuentes se recalcula la comparación y solo se conservan decisiones de bloques únicos cuyo texto y contexto inmediato no cambiaron.
+5. Guarda el resultado directamente con **Guardar resultado como…**, en UTF-8 sin BOM. Para ajustes libres, usa **Edición → Editar resultado manualmente**: las fuentes y los checks se bloquean mientras editas el resultado. **Usar resultado como original** permite continuar seleccionando con esas ediciones como nuevo original.
+
+El merge mantiene sus documentos y decisiones separados del comparador y usa `SectionMergeSession`, del módulo independiente `DiffComparer.Merge`. Ese módulo también contiene un motor probado de tres entradas con base común; la ventana actual ofrece el flujo original/entrante. [Uso detallado y arquitectura](docs/MERGE.es.md).
 
 ## Limpiar, intercambiar y recuperar
 
-- **Limpiar:** vacía únicamente el panel donde pulsaste el botón.
+- **Limpiar izquierda / Limpiar derecha:** en **Edición**, vacía únicamente el panel indicado.
 - **Intercambiar:** cambia los textos de lado. El texto que queda a la izquierda pasa a ser el original de la comparación.
 - **Restablecer:** vacía ambos paneles y devuelve las opciones de comparación a sus valores iniciales. Conserva el tema elegido.
 - **Recuperar textos:** restaura ambos textos y las opciones anteriores a la última limpieza, intercambio o restablecimiento.
@@ -90,6 +106,8 @@ Por defecto se conserva el estilo de saltos de línea del destino. Desactiva **C
 La recuperación conserva una sola instantánea, no un historial ilimitado, y no recupera las marcas de revisión de una sesión restablecida. Estas acciones no modifican los archivos guardados. **Copiar resultado** copia todo el texto derecho, aunque haya filtros activos.
 
 ## Exportar
+
+Las dos acciones están en **Archivo**:
 
 - **Informe HTML:** comparación completa, números originales, reglas aplicadas, movimientos y revisión. El contenido se escapa para no ejecutar texto de los archivos como HTML.
 - **Parche:** unified diff del contenido completo, independiente de filtros y de la opción de ignorar espacios. Conserva si existe un salto final. Utiliza un único bloque con todo el contexto y normaliza el estilo de finales de línea; no es una comparación binaria.
@@ -112,7 +130,7 @@ Requiere el SDK de .NET 10.
 dotnet test DiffComparer.slnx -c Release
 ```
 
-Las pruebas incluyen motor, filtros, revisión, codificaciones, exportaciones y ventanas renderizadas con Avalonia Headless. También comprueban los temas, el contraste, la distribución compacta, las ayudas y la recuperación de textos. No necesitan abrir ventanas del escritorio; los diálogos de archivos y el portapapeles utilizan servicios simulados. La prueba `PerformanceSmokeTests` mide una comparación de 20.000 líneas; sus tiempos dependen del equipo.
+Las pruebas incluyen motores de comparación y merge, selección de secciones en vivo, filtros, revisión, codificaciones, exportaciones y ventanas renderizadas con Avalonia Headless. También comprueban tipografía, temas, estados de botones al pasar el cursor, enfocar o deshabilitar, contraste, distribución compacta, ayudas y recuperación de textos. No necesitan abrir ventanas del escritorio; los diálogos de archivos y el portapapeles utilizan servicios simulados. La prueba `PerformanceSmokeTests` mide una comparación de 20.000 líneas; sus tiempos dependen del equipo.
 
 Para guardar capturas, mediciones y ejemplos de parches:
 
@@ -125,4 +143,6 @@ dotnet test DiffComparer.slnx -c Release
 
 El análisis es textual: no interpreta semánticamente código, JSON ni XML. La detección conservadora de movimientos no intenta adivinar bloques repetidos o movidos con ediciones. Los textos modificados en el editor no se guardan automáticamente y las revisiones no persisten entre sesiones.
 
-Actualmente no se admiten comparación de carpetas, combinación de tres versiones con ancestro común, recálculo incremental, sesiones persistentes ni arrastrar archivos.
+Elegir ambos bloques concatena texto: revisa declaraciones duplicadas u otros conflictos de código y usa la edición manual cuando corresponda.
+
+La interfaz no expone el motor de tres versiones con ancestro común ni gestiona conflictos o ramas de Git. Tampoco admite comparación de carpetas, recálculo incremental, sesiones persistentes ni arrastrar archivos.
