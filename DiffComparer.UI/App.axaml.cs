@@ -23,7 +23,12 @@ public partial class App : Application
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            desktop.MainWindow = new MainWindow();
+            var typographyStore = new DiffComparer.UI.Editing.EditorTypographyStore(System.IO.Path.Combine(
+                System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
+                "DiffComparer", "editor-typography.json"));
+            var typography = typographyStore.Load();
+            desktop.MainWindow = new MainWindow(null, typography);
+            desktop.Exit += (_, _) => typographyStore.Save(typography);
         }
 
         base.OnFrameworkInitializationCompleted();

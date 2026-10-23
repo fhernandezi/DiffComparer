@@ -32,18 +32,22 @@ public class MaterialPresentationTests
             await vm.PendingComparison;
             await vm.PendingViewUpdate;
         }
+        // Let popup dismissal finish before sending the next physical click.
+        await Task.Delay(160);
         RenderReady();
         Assert.True(button.IsEffectivelyEnabled);
-        var point = button.TranslatePoint(new Point(button.Bounds.Width / 2, button.Bounds.Height / 2), window)!.Value;
-        var hit = window.InputHitTest(point) as Visual;
+        var surface = (TopLevel?)button.GetVisualRoot() ?? window;
+        var point = button.TranslatePoint(new Point(button.Bounds.Width / 2, button.Bounds.Height / 2), surface)!.Value;
+        var hit = surface.InputHitTest(point) as Visual;
         Assert.True(ReferenceEquals(hit, button) || hit?.GetVisualAncestors().Contains(button) == true,
             $"Click missed {button.Content}: {point}, visible {button.IsVisible}/{button.IsEffectivelyVisible}, hit {hit}, parents {string.Join(" > ", hit?.GetVisualAncestors().Select(v => v.ToString()) ?? Array.Empty<string>())}, window {window.Bounds}");
-        window.MouseDown(point, MouseButton.Left);
-        window.MouseUp(point, MouseButton.Left);
-        if (button.Command is IAsyncRelayCommand command && command.ExecutionTask is { } task) await task;
+        var action = button.Command as IAsyncRelayCommand;
+        surface.MouseDown(point, MouseButton.Left);
+        surface.MouseUp(point, MouseButton.Left);
+        if (action?.ExecutionTask is { } task) await task;
     }
     private static Button ButtonFor(Window window, object command) =>
-        window.GetVisualDescendants().OfType<Button>().Single(b => ReferenceEquals(b.Command, command));
+        ToolbarTestAccess.Reveal(window, b => ReferenceEquals(b.Command, command));
 
     [AvaloniaTheory]
     [InlineData("Oscuro")]

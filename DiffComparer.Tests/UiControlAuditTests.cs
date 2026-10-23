@@ -27,7 +27,8 @@ public class UiControlAuditTests
             string? name = label switch { "Abrir izquierda" => "OpenLeftButton", "Abrir derecha" => "OpenRightButton",
                 "Guardar izq. como…" => "SaveLeftButton", "Guardar der. como…" => "SaveRightButton",
                 "↑ Anterior" => "PreviousButton", "↓ Siguiente" => "NextButton", _ => null };
-            if (name is not null) return (T)(ContentControl)window.FindControl<Button>(name)!;
+            return (T)(ContentControl)ToolbarTestAccess.Reveal(window,
+                b => name is not null ? b.Name == name : b.Content?.ToString() == label);
         }
         var match = window.GetVisualDescendants().OfType<T>().SingleOrDefault(c => c.Content?.ToString() == label);
         if (match is null || !match.IsEffectivelyVisible)
@@ -60,13 +61,15 @@ public class UiControlAuditTests
         using var frame = window.CaptureRenderedFrame();
         Assert.True(control.IsEffectivelyVisible);
         Assert.True(control.IsEffectivelyEnabled);
-        var point = control.TranslatePoint(new Point(control.Bounds.Width / 2, control.Bounds.Height / 2), window)!.Value;
-        var hit = window.InputHitTest(point) as Visual;
+        var surface = (TopLevel?)control.GetVisualRoot() ?? window;
+        var point = control.TranslatePoint(new Point(control.Bounds.Width / 2, control.Bounds.Height / 2), surface)!.Value;
+        var hit = surface.InputHitTest(point) as Visual;
         Assert.True(ReferenceEquals(hit, control) || hit?.GetVisualAncestors().Contains(control) == true,
             $"Click missed {control}: {point}, hit {hit}");
-        window.MouseDown(point, MouseButton.Left);
-        window.MouseUp(point, MouseButton.Left);
-        if (control is Button { Command: IAsyncRelayCommand command } && command.ExecutionTask is { } task) await task;
+        var action = (control as Button)?.Command as IAsyncRelayCommand;
+        surface.MouseDown(point, MouseButton.Left);
+        surface.MouseUp(point, MouseButton.Left);
+        if (action?.ExecutionTask is { } task) await task;
     }
 
     private static SKBitmap Snapshot(Window window)
@@ -319,9 +322,10 @@ public class UiControlAuditTests
                 var button = NamedByContent<Button>(window, label);
                 button.BringIntoView();
                 RenderForLayout();
-                var point = button.TranslatePoint(default, window)!.Value;
-                Assert.InRange(point.X, 0, window.Bounds.Width - button.Bounds.Width);
-                Assert.InRange(point.Y, 0, window.Bounds.Height - button.Bounds.Height);
+                var surface = (TopLevel?)button.GetVisualRoot() ?? window;
+                var point = button.TranslatePoint(default, surface)!.Value;
+                Assert.InRange(point.X, 0, surface.Bounds.Width - button.Bounds.Width);
+                Assert.InRange(point.Y, 0, surface.Bounds.Height - button.Bounds.Height);
             }
             string? artifacts = Environment.GetEnvironmentVariable("DIFFCOMPARER_TEST_ARTIFACTS");
             if (!string.IsNullOrEmpty(artifacts))

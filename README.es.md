@@ -14,6 +14,7 @@ Desarrollada con **.NET 10** y **Avalonia**, con interfaz en **español**.
 
 ## Qué puedes hacer
 
+- **Merge por secciones:** compara original y entrante mientras editas, resalta sus diferencias y permite elegir cada bloque con un check del margen. El resultado se construye debajo, en una ventana independiente. [Guía y arquitectura del merge](docs/MERGE.es.md).
 - **Comparar mientras editas:** ambos textos permanecen editables y las diferencias se actualizan automáticamente.
 - **Entender los cambios:** colores suaves, fragmentos destacados, números de línea originales y corchetes que delimitan cada sección.
 - **Copiar secciones:** lleva cambios de un lado al otro y deshaz o rehace las copias.
@@ -34,7 +35,9 @@ Abre un archivo en cada panel o pega tus textos. **La izquierda es el original**
 
 ## Interfaz y apariencia
 
-El selector superior permite elegir Claro, Oscuro o Sistema. Los dos textos permanecen editables; las ayudas explican cada acción al pasar el puntero. Las opciones menos frecuentes están en **Opciones de comparación y vista**; **Listo** o **Esc** cierran ese panel.
+**Vista → Texto**, disponible en el comparador y el merge, permite elegir la fuente instalada, tamaño (8–48 px), interlineado (1–2,5) y ajuste de líneas al ancho. El zoom (50–300 %) usa **Ctrl + rueda**, **Ctrl + + / −** o **Ctrl + 0** para volver al 100 %. Ambos paneles del comparador y los editores del merge comparten estos ajustes; se conservan al cerrar normalmente la aplicación. Cambiar la presentación mantiene documentos, selección e historial. **Restablecer texto** devuelve los ajustes iniciales sin modificar el contenido.
+
+La barra superior agrupa acciones en **Archivo**, **Edición**, **Vista**, **Herramientas** y **Ayuda**. Archivo permite abrir, guardar y exportar; Edición reúne las copias, el historial, la limpieza y la recuperación; Vista contiene apariencia y texto. **Herramientas → Merge…** abre el merge independiente. La franja rápida mantiene navegación, revisión y búsqueda. Las cabeceras de los editores muestran sus archivos, sin botones repetidos. Las opciones de comparación están en **Opciones**; **Listo** o **Esc** cierran ese panel.
 
 Cada lado permite abrir, guardar, limpiar y copiar su texto. **Copiar resultado** copia todo el panel derecho al portapapeles. **Intercambiar** cambia los textos de lado; **Restablecer** vacía ambos y devuelve las opciones iniciales. **Recuperar textos** restaura los textos y opciones anteriores a la última de estas acciones. No modifica los archivos guardados.
 

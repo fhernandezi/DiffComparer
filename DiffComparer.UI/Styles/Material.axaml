@@ -3,35 +3,49 @@
     <ResourceDictionary>
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-          <SolidColorBrush x:Key="Surface">#F6F8FC</SolidColorBrush>
-          <SolidColorBrush x:Key="Container">#FFFFFF</SolidColorBrush>
-          <SolidColorBrush x:Key="ContainerHigh">#EDF1F8</SolidColorBrush>
-          <SolidColorBrush x:Key="OnSurface">#202736</SolidColorBrush>
-          <SolidColorBrush x:Key="OnSurfaceVariant">#536176</SolidColorBrush>
-          <SolidColorBrush x:Key="Primary">#415F91</SolidColorBrush>
+          <SolidColorBrush x:Key="Surface">#FFFFFF</SolidColorBrush>
+          <SolidColorBrush x:Key="Container">#F9FAFB</SolidColorBrush>
+          <SolidColorBrush x:Key="ContainerHigh">#F3F4F6</SolidColorBrush>
+          <SolidColorBrush x:Key="OnSurface">#1F2937</SolidColorBrush>
+          <SolidColorBrush x:Key="OnSurfaceVariant">#4B5563</SolidColorBrush>
+          <SolidColorBrush x:Key="Primary">#3B82F6</SolidColorBrush>
           <SolidColorBrush x:Key="OnPrimary">#FFFFFF</SolidColorBrush>
-          <SolidColorBrush x:Key="PrimaryContainer">#D6E3FF</SolidColorBrush>
-          <SolidColorBrush x:Key="OnPrimaryContainer">#19314F</SolidColorBrush>
-          <SolidColorBrush x:Key="OutlineSoft">#DCE2EC</SolidColorBrush>
-          <SolidColorBrush x:Key="HoverSurface">#E0E7F3</SolidColorBrush>
-          <SolidColorBrush x:Key="PressedSurface">#CBD8EB</SolidColorBrush>
+          <SolidColorBrush x:Key="PrimaryContainer">#DBEAFE</SolidColorBrush>
+          <SolidColorBrush x:Key="OnPrimaryContainer">#1F2937</SolidColorBrush>
+          <SolidColorBrush x:Key="Secondary">#8B5CF6</SolidColorBrush>
+          <SolidColorBrush x:Key="SecondaryContainer">#EDE9FE</SolidColorBrush>
+          <SolidColorBrush x:Key="OnSecondaryContainer">#4C1D95</SolidColorBrush>
+          <SolidColorBrush x:Key="Success">#10B981</SolidColorBrush>
+          <SolidColorBrush x:Key="Error">#EF4444</SolidColorBrush>
+          <SolidColorBrush x:Key="OnError">#111827</SolidColorBrush>
+          <SolidColorBrush x:Key="FocusRing">#8B5CF6</SolidColorBrush>
+          <SolidColorBrush x:Key="OutlineSoft">#E5E7EB</SolidColorBrush>
+          <SolidColorBrush x:Key="HoverSurface">#EDE9FE</SolidColorBrush>
+          <SolidColorBrush x:Key="PressedSurface">#DDD6FE</SolidColorBrush>
           <SolidColorBrush x:Key="AddedInk">#28653B</SolidColorBrush>
           <SolidColorBrush x:Key="DeletedInk">#963D4C</SolidColorBrush>
           <SolidColorBrush x:Key="ModifiedInk">#775815</SolidColorBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-          <SolidColorBrush x:Key="Surface">#10141C</SolidColorBrush>
-          <SolidColorBrush x:Key="Container">#191E28</SolidColorBrush>
-          <SolidColorBrush x:Key="ContainerHigh">#242C3A</SolidColorBrush>
-          <SolidColorBrush x:Key="OnSurface">#E5E9F2</SolidColorBrush>
-          <SolidColorBrush x:Key="OnSurfaceVariant">#ACB7CA</SolidColorBrush>
-          <SolidColorBrush x:Key="Primary">#AAC7FF</SolidColorBrush>
-          <SolidColorBrush x:Key="OnPrimary">#102F60</SolidColorBrush>
-          <SolidColorBrush x:Key="PrimaryContainer">#2B4268</SolidColorBrush>
-          <SolidColorBrush x:Key="OnPrimaryContainer">#D6E3FF</SolidColorBrush>
-          <SolidColorBrush x:Key="OutlineSoft">#333D4E</SolidColorBrush>
-          <SolidColorBrush x:Key="HoverSurface">#303E55</SolidColorBrush>
-          <SolidColorBrush x:Key="PressedSurface">#405575</SolidColorBrush>
+          <SolidColorBrush x:Key="Surface">#111827</SolidColorBrush>
+          <SolidColorBrush x:Key="Container">#1F2937</SolidColorBrush>
+          <SolidColorBrush x:Key="ContainerHigh">#273449</SolidColorBrush>
+          <SolidColorBrush x:Key="OnSurface">#F9FAFB</SolidColorBrush>
+          <SolidColorBrush x:Key="OnSurfaceVariant">#CBD5E1</SolidColorBrush>
+          <SolidColorBrush x:Key="Primary">#003994</SolidColorBrush>
+          <SolidColorBrush x:Key="OnPrimary">#F9FAFB</SolidColorBrush>
+          <SolidColorBrush x:Key="PrimaryContainer">#003994</SolidColorBrush>
+          <SolidColorBrush x:Key="OnPrimaryContainer">#F9FAFB</SolidColorBrush>
+          <SolidColorBrush x:Key="Secondary">#4F1F9E</SolidColorBrush>
+          <SolidColorBrush x:Key="SecondaryContainer">#4F1F9E</SolidColorBrush>
+          <SolidColorBrush x:Key="OnSecondaryContainer">#F9FAFB</SolidColorBrush>
+          <SolidColorBrush x:Key="Success">#00401A</SolidColorBrush>
+          <SolidColorBrush x:Key="Error">#830000</SolidColorBrush>
+          <SolidColorBrush x:Key="OnError">#F9FAFB</SolidColorBrush>
+          <SolidColorBrush x:Key="FocusRing">#C4B5FD</SolidColorBrush>
+          <SolidColorBrush x:Key="OutlineSoft">#374151</SolidColorBrush>
+          <SolidColorBrush x:Key="HoverSurface">#4F1F9E</SolidColorBrush>
+          <SolidColorBrush x:Key="PressedSurface">#003994</SolidColorBrush>
           <SolidColorBrush x:Key="AddedInk">#A1D7AE</SolidColorBrush>
           <SolidColorBrush x:Key="DeletedInk">#F0AFB8</SolidColorBrush>
           <SolidColorBrush x:Key="ModifiedInk">#E6CF95</SolidColorBrush>
@@ -58,89 +72,30 @@
   <Style Selector="Border.card">
     <Setter Property="Background" Value="{DynamicResource Container}" />
     <Setter Property="CornerRadius" Value="16" />
-  </Style>
-  <Style Selector="Button">
-    <Setter Property="MinHeight" Value="36" />
-    <Setter Property="Padding" Value="12,7" />
-    <Setter Property="CornerRadius" Value="18" />
-    <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
-    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-    <Setter Property="BorderBrush" Value="Transparent" />
-    <Setter Property="BorderThickness" Value="2" />
-    <Setter Property="HorizontalContentAlignment" Value="Center" />
-  </Style>
-  <Style Selector="Button /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
-    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-  </Style>
-  <Style Selector="Button.quiet /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Background" Value="Transparent" />
-  </Style>
-  <Style Selector="Button.primary /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
-    <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainer}" />
-  </Style>
-  <Style Selector="Button.danger /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Foreground" Value="{DynamicResource DeletedInk}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource OutlineSoft}" />
+    <Setter Property="BorderThickness" Value="1" />
   </Style>
   <Style Selector="Expander">
     <Setter Property="Template">
       <ControlTemplate>
-        <ToggleButton Name="PART_ToggleButton" IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
-                      Padding="12,8" MinHeight="36" HorizontalContentAlignment="Stretch"
-                      Background="Transparent" BorderBrush="Transparent" BorderThickness="0"
-                      ToolTip.Tip="Abre o cierra los ajustes de comparación. También puedes cerrarlos con Esc.">
+        <ToggleButton Name="PART_ToggleButton" IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}" Padding="12,8" MinHeight="36" HorizontalContentAlignment="Stretch" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" ToolTip.Tip="Abre o cierra los ajustes de comparación. También puedes cerrarlos con Esc.">
           <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
             <ContentPresenter Content="{TemplateBinding Header}" VerticalAlignment="Center" />
-            <Path Grid.Column="1" Classes="expanderArrow" Data="M 0,0 L 5,5 L 10,0" Width="10" Height="6"
-                  Stroke="{DynamicResource OnSurfaceVariant}" StrokeThickness="1.5" VerticalAlignment="Center"
-                  RenderTransformOrigin="50%,50%" />
+            <Path Grid.Column="1" Classes="expanderArrow" Data="M 0,0 L 5,5 L 10,0" Width="10" Height="6" Stroke="{DynamicResource OnSurfaceVariant}" StrokeThickness="1.5" VerticalAlignment="Center" RenderTransformOrigin="50%,50%" />
           </Grid>
         </ToggleButton>
       </ControlTemplate>
     </Setter>
   </Style>
   <Style Selector="Expander /template/ ToggleButton:checked Path.expanderArrow">
-    <Setter Property="RenderTransform"><RotateTransform Angle="180" /></Setter>
+    <Setter Property="RenderTransform">
+      <RotateTransform Angle="180" />
+    </Setter>
   </Style>
   <Style Selector="Expander /template/ ToggleButton">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderBrush" Value="Transparent" />
     <Setter Property="CornerRadius" Value="10" />
-  </Style>
-  <Style Selector="Button.primary">
-    <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
-    <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainer}" />
-    <Setter Property="FontWeight" Value="SemiBold" />
-  </Style>
-  <Style Selector="Button.quiet">
-    <Setter Property="Background" Value="Transparent" />
-  </Style>
-  <Style Selector="Button.danger">
-    <Setter Property="Foreground" Value="{DynamicResource DeletedInk}" />
-  </Style>
-  <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Background" Value="{DynamicResource HoverSurface}" />
-    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-  </Style>
-  <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Background" Value="{DynamicResource PressedSurface}" />
-  </Style>
-  <Style Selector="Button:focus-visible /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
-    <Setter Property="BorderThickness" Value="2" />
-  </Style>
-  <Style Selector="Button:disabled">
-    <Setter Property="Opacity" Value="0.6" />
-  </Style>
-  <Style Selector="Button:disabled /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
-    <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
-  </Style>
-  <Style Selector="Button /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Transitions">
-      <Transitions><BrushTransition Property="Background" Duration="0:0:0.12" /></Transitions>
-    </Setter>
   </Style>
   <Style Selector="CheckBox">
     <Setter Property="MinHeight" Value="36" />
@@ -151,13 +106,6 @@
     <Setter Property="CornerRadius" Value="10" />
     <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
     <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-  </Style>
-  <Style Selector="TextBox">
-    <Setter Property="MinHeight" Value="38" />
-    <Setter Property="CornerRadius" Value="12" />
-    <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
-    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-    <Setter Property="BorderBrush" Value="Transparent" />
   </Style>
   <Style Selector="NumericUpDown">
     <Setter Property="MinHeight" Value="36" />
@@ -171,8 +119,22 @@
     <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
     <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
   </Style>
-  <Style Selector="ToolTip TextBlock"><Setter Property="TextWrapping" Value="Wrap" /></Style>
-  <Style Selector="Window.compact TextBlock.heroSubtitle"><Setter Property="IsVisible" Value="False" /></Style>
-  <Style Selector="Window.compact TextBlock.changeDetails"><Setter Property="IsVisible" Value="False" /></Style>
-  <Style Selector="Window.compact Button"><Setter Property="Padding" Value="9,5" /><Setter Property="FontSize" Value="12" /></Style>
+  <Style Selector="FlyoutPresenter">
+    <Setter Property="Background" Value="{DynamicResource Container}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource OutlineSoft}" />
+  </Style>
+  <Style Selector="ToolTip TextBlock">
+    <Setter Property="TextWrapping" Value="Wrap" />
+  </Style>
+  <Style Selector="Window.compact TextBlock.heroSubtitle">
+    <Setter Property="IsVisible" Value="False" />
+  </Style>
+  <Style Selector="Window.compact TextBlock.changeDetails">
+    <Setter Property="IsVisible" Value="False" />
+  </Style>
+  <Style Selector="Window.compact Button">
+    <Setter Property="Padding" Value="9,5" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
 </Styles>

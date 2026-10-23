@@ -30,6 +30,13 @@ public sealed class OriginalLineNumberMargin : Control
     }
     private int _maxNumber;
     private int _digits = 4;
+    private FontFamily _fontFamily = new("Consolas");
+    private double _fontSize = 13;
+    public void SetTypography(FontFamily family, double size)
+    {
+        _fontFamily = family; _fontSize = size;
+        InvalidateMeasure(); InvalidateVisual();
+    }
     public OriginalLineNumberMargin(TextView view, bool left)
     {
         _view = view;
@@ -55,7 +62,10 @@ public sealed class OriginalLineNumberMargin : Control
     {
         int max = _comparing ? _maxNumber : _view.Document?.LineCount ?? 1;
         _digits = Math.Max(4, max.ToString().Length);
-        return new Size(_digits * 9 + (_sourceMode ? 42 : 24), 0);
+        var sample = new FormattedText(new string('0', _digits) + (_sourceMode ? "~ ✓ ¶ ↔" : "✓ ¶"),
+            System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+            new Typeface(_fontFamily), _fontSize, Brushes.Gray);
+        return new Size(Math.Max(_digits * 9 + (_sourceMode ? 42 : 24), sample.Width + 12), 0);
     }
     public override void Render(DrawingContext context)
     {
@@ -87,7 +97,7 @@ public sealed class OriginalLineNumberMargin : Control
                 if (source.Line.MoveId.HasValue) { label += " ↔"; brush = DiffPalette.Selection(IsDarkTheme).Brush!; }
             }
             var text = new FormattedText(label, System.Globalization.CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight, new Typeface("Consolas"), 13, brush);
+                FlowDirection.LeftToRight, new Typeface(_fontFamily), _fontSize, brush);
             context.DrawText(text, new Point(Math.Max(0, Bounds.Width - text.Width - 8), visual.VisualTop - _view.VerticalOffset));
         }
     }

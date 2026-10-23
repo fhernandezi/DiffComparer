@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:editing="using:DiffComparer.UI.Editing"
+             x:Class="DiffComparer.UI.Controls.EditorTypographyButton" x:DataType="editing:EditorTypography">
+  <Button Content="Texto" ToolTip.Tip="Fuente, tamaño, interlineado, ajuste de líneas y zoom de los editores.">
+    <Button.Flyout>
+      <Flyout Placement="BottomEdgeAlignedRight">
+        <StackPanel Width="300" Spacing="10">
+          <TextBlock Text="Lectura del editor" FontSize="20" FontWeight="SemiBold" />
+          <TextBlock Text="Fuente" />
+          <ComboBox Name="FontPicker" SelectedItem="{Binding FontName, Mode=TwoWay}" HorizontalAlignment="Stretch" MaxDropDownHeight="280" AutomationProperties.Name="Fuente del editor" />
+          <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Tamaño (px)" />
+              <NumericUpDown Value="{Binding FontSize, Mode=TwoWay}" Minimum="8" Maximum="48" Increment="1" FormatString="0" AutomationProperties.Name="Tamaño de fuente" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Spacing="4">
+              <TextBlock Text="Interlineado" />
+              <NumericUpDown Value="{Binding LineSpacing, Mode=TwoWay}" Minimum="1" Maximum="2.5" Increment="0.1" FormatString="0.00" AutomationProperties.Name="Interlineado" />
+            </StackPanel>
+          </Grid>
+          <TextBlock Text="Zoom" />
+          <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="6">
+            <Button Content="−" Command="{Binding ZoomOutCommand}" AutomationProperties.Name="Reducir zoom" />
+            <TextBlock Grid.Column="1" Text="{Binding ZoomLabel}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <Button Grid.Column="2" Content="+" Command="{Binding ZoomInCommand}" AutomationProperties.Name="Aumentar zoom" />
+            <Button Grid.Column="3" Content="100%" Command="{Binding ResetZoomCommand}" ToolTip.Tip="Restablece solo el zoom." />
+          </Grid>
+          <CheckBox Content="Ajustar líneas al ancho" IsChecked="{Binding WordWrap}" />
+          <TextBlock Classes="caption" Text="Ctrl + rueda · Ctrl + + / − · Ctrl + 0&#10;Se aplica al comparador y al merge." TextWrapping="Wrap" />
+          <Button Content="Restablecer texto" Command="{Binding ResetTypographyCommand}" ToolTip.Tip="Restaura fuente, tamaño, zoom, interlineado y ajuste de líneas." />
+        </StackPanel>
+      </Flyout>
+    </Button.Flyout>
+  </Button>
+</UserControl>

@@ -20,6 +20,26 @@ namespace DiffComparer.UI.Views;
 
 public partial class MainWindow : Window
 {
+    private void CloseCommandMenus(object? sender, RoutedEventArgs e)
+    {
+        if (e.Source is not Button { Command: not null } && e.Source is not Button { Name: "OpenMergeButton" }) return;
+        // Button executes its command after raising Click. Keep bindings attached until then.
+        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+        {
+            foreach (string name in new[] { "FileToolsButton", "EditToolsButton", "ToolsButton" })
+                this.FindControl<Button>(name)?.Flyout?.Hide();
+        });
+    }
+    public DiffComparer.UI.Editing.EditorTypography Typography { get; }
+    private DiffComparer.UI.Merge.MergeWindow? _mergeWindow;
+    private void OpenMerge(object? sender, RoutedEventArgs e)
+    {
+        if (_mergeWindow is not null) { _mergeWindow.Activate(); return; }
+        _mergeWindow = new DiffComparer.UI.Merge.MergeWindow(null, Typography) { RequestedThemeVariant = ActualThemeVariant };
+        _mergeWindow.Closed += (_, _) => _mergeWindow = null;
+        _mergeWindow.Show(this);
+    }
+
     private void CloseOptions(object? sender, RoutedEventArgs e)
     {
         var options = this.FindControl<Expander>("OptionsExpander")!;
@@ -28,9 +48,11 @@ public partial class MainWindow : Window
     }
 
     public MainWindow() : this(null) { }
-    public MainWindow(MainWindowViewModel? viewModel)
+    public MainWindow(MainWindowViewModel? viewModel, DiffComparer.UI.Editing.EditorTypography? typography = null)
     {
         InitializeComponent();
+        Typography = typography ?? new();
+        this.FindControl<EditorTypographyButton>("TypographyButton")!.DataContext = Typography;
         var vm = viewModel ?? new MainWindowViewModel(new FilePickerService(this));
         DataContext = vm;
         vm.ClipboardService ??= new WindowClipboardService(this);
@@ -50,6 +72,7 @@ public partial class MainWindow : Window
         var rightMargin = new OriginalLineNumberMargin(right.TextArea.TextView, false);
         left.TextArea.LeftMargins.Add(leftMargin);
         right.TextArea.LeftMargins.Add(rightMargin);
+        var presentation = new DiffComparer.UI.Editing.EditorPresentation(this, Typography, left, right);
         const string lineHelp = "Los números indican las líneas del texto. + significa que se añadió; − que se eliminó; ~ que cambió. ✓ significa que ya revisaste esa sección; ¶ indica un cambio en el salto de línea; ↔ indica texto que cambió de lugar.";
         ToolTip.SetTip(leftMargin, lineHelp); ToolTip.SetTip(rightMargin, lineHelp);
         left.TextArea.TextView.BackgroundRenderers.Add(leftBackground);
@@ -147,9 +170,6 @@ public partial class MainWindow : Window
             bool compact = (Bounds.Width > 0 ? Bounds.Width : Width) < 1100 || (Bounds.Height > 0 ? Bounds.Height : Height) < 740;
             Classes.Set("compact", compact);
             foreach (var item in new[] {
-                ("OpenLeftButton", "Abrir izquierda", "Abrir"), ("OpenRightButton", "Abrir derecha", "Abrir"),
-                ("SaveLeftButton", "Guardar izq. como…", "Guardar"), ("SaveRightButton", "Guardar der. como…", "Guardar"),
-                ("CopyLeftTextButton", "Copiar texto", "Copiar"), ("CopyResultButton", "Copiar resultado", "Copiar resultado"),
                 ("PreviousButton", "↑ Anterior", "↑"), ("NextButton", "↓ Siguiente", "↓") })
                 this.FindControl<Button>(item.Item1)!.Content = compact ? item.Item3 : item.Item2;
         }
@@ -215,7 +235,7 @@ public partial class MainWindow : Window
         };
         SizeChanged += (_, _) => UpdateDensity();
         ActualThemeVariantChanged += (_, _) => RefreshTheme();
-        Closed += (_, _) => vm.Dispose();
+        Closed += (_, _) => { presentation.Dispose(); vm.Dispose(); };
         RefreshEditors();
         ApplyAppearance();
         UpdateDensity();

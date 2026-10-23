@@ -126,7 +126,7 @@ public sealed class ChangeActionGutter : Canvas
                     string Describe(LineRange range) => range.Count == 0 ? $"se pega antes de la línea {range.Start + 1}"
                         : range.Count == 1 ? $"línea {range.Start + 1}" : $"líneas {range.Start + 1}–{range.End}";
                     var button = new Button { Content = content, Width = 26, MinHeight = ButtonHeight, Height = ButtonHeight,
-                        Padding = new Thickness(0), BorderThickness = new Thickness(0), CornerRadius = new CornerRadius(8), FontSize = 16, Command = _model.ApplyChangeCommand,
+                        Padding = new Thickness(0), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), FontSize = 16, Command = _model.ApplyChangeCommand,
                         CommandParameter = new CopyRequest(result.Id, hunk.Id, direction) };
                     ToolTip.SetTip(button, $"Copiar toda esta sección {(toRight ? "izquierda → derecha" : "derecha → izquierda")}\n"
                         + $"De: {Describe(source)}\nA: {Describe(destination)}");

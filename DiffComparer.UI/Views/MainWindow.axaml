@@ -1,11 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:DiffComparer.UI.ViewModels"
-        xmlns:controls="using:DiffComparer.UI.Controls"
-        xmlns:edit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
-        x:Class="DiffComparer.UI.Views.MainWindow" x:DataType="vm:MainWindowViewModel"
-        Title="DiffComparer · Compara con claridad" Width="1360" Height="900" MinWidth="850" MinHeight="600"
-        RequestedThemeVariant="Dark" Background="{DynamicResource Surface}">
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:DiffComparer.UI.ViewModels" xmlns:controls="using:DiffComparer.UI.Controls" xmlns:edit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit" x:Class="DiffComparer.UI.Views.MainWindow" x:DataType="vm:MainWindowViewModel" Title="DiffComparer · Compara con claridad" Width="1360" Height="900" MinWidth="850" MinHeight="600" RequestedThemeVariant="Dark" Background="{DynamicResource Surface}">
   <Window.KeyBindings>
     <KeyBinding Gesture="F7" Command="{Binding NextChangeCommand}" />
     <KeyBinding Gesture="Shift+F7" Command="{Binding PreviousChangeCommand}" />
@@ -14,150 +7,170 @@
     <KeyBinding Gesture="Control+F" Command="{Binding FocusSearchCommand}" />
   </Window.KeyBindings>
   <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="20,16,20,12" RowSpacing="12">
-    <Grid ColumnDefinitions="*,Auto" Margin="4,0">
-      <StackPanel Spacing="3">
-        <TextBlock Text="DiffComparer" FontSize="25" FontWeight="SemiBold" />
-        <TextBlock Classes="caption heroSubtitle" Text="Dos textos. Cada cambio, a la vista." />
-      </StackPanel>
-      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-        <ComboBox Name="AppearancePicker" ItemsSource="{Binding AppearanceModes}" SelectedItem="{Binding SelectedAppearance}"
-                  MinWidth="108" AutomationProperties.Name="Apariencia"
-                  ToolTip.Tip="Elige colores claros, oscuros o los que usa tu equipo." />
-        <Button Content="Ayuda" Classes="quiet" ToolTip.Tip="Abre una guía corta para comparar, copiar cambios y usar el teclado.">
-          <Button.Flyout>
-            <Flyout>
-              <StackPanel MaxWidth="360" Spacing="12">
-                <TextBlock Text="Compara con tranquilidad" FontSize="20" FontWeight="SemiBold" />
-                <TextBlock Text="1. Escribe, pega o abre un texto en cada lado. La comparación se actualiza sola." TextWrapping="Wrap" />
-                <TextBlock Text="2. Verde indica líneas nuevas; rojo, líneas que faltan; amarillo, líneas que cambiaron. La izquierda es el original." TextWrapping="Wrap" />
-                <TextBlock Text="3. Las flechas entre los textos copian toda la sección marcada con un corchete. Deshacer revierte la copia." TextWrapping="Wrap" />
-                <TextBlock Text="4. Copiar resultado copia todo el texto derecho. Guardar crea un archivo donde tú elijas." TextWrapping="Wrap" />
-                <TextBlock Text="F7: siguiente cambio · Mayús + F7: anterior
-Ctrl + F: buscar · F3: siguiente resultado
-Ctrl + Z / Ctrl + Y: deshacer y rehacer en el editor" TextWrapping="Wrap" Classes="caption" />
-                <TextBlock Text="Cierra esta ayuda con Esc o haciendo clic fuera." Classes="caption" />
-              </StackPanel>
-            </Flyout>
-          </Button.Flyout>
-        </Button>
-      </StackPanel>
-    </Grid>
-    <Border Grid.Row="1" Classes="card" Padding="12,8">
-      <StackPanel Spacing="8">
-        <WrapPanel>
+    <Border Classes="toolbar" Padding="8,4">
+      <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+        <StackPanel Orientation="Horizontal" Spacing="2">
+          <Button Name="FileToolsButton" Content="Archivo ▾" Classes="toolbarMenu" ToolTip.Tip="Abrir, guardar y exportar archivos.">
+            <Button.Flyout>
+              <Flyout Placement="BottomEdgeAlignedLeft">
+                <StackPanel Classes="commandMenu" Width="230" Spacing="2" Button.Click="CloseCommandMenus">
+                  <TextBlock Text="ABRIR Y GUARDAR" Classes="sectionLabel" Margin="10,6" />
+                  <Button Name="OpenLeftButton" Content="Abrir izquierda" Command="{Binding OpenLeftFileCommand}" Margin="0,0,6,4" ToolTip.Tip="Elige un archivo para usarlo como texto original a la izquierda." />
+                  <Button Name="OpenRightButton" Content="Abrir derecha" Command="{Binding OpenRightFileCommand}" Margin="0,0,6,4" ToolTip.Tip="Elige el archivo que quieres comparar con el original de la izquierda." />
+                  <Button Name="SaveLeftButton" Content="Guardar izq. como…" Command="{Binding SaveLeftAsCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Guarda todo el texto izquierdo en un archivo. Tú eliges dónde y con qué nombre." />
+                  <Button Name="SaveRightButton" Content="Guardar der. como…" Command="{Binding SaveRightAsCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Guarda todo el texto derecho en un archivo. Tú eliges dónde y con qué nombre." />
+                  <Separator Margin="6" />
+                  <Button Content="Informe HTML" Command="{Binding ExportHtmlCommand}" ToolTip.Tip="Exporta la comparación completa como informe HTML." />
+                  <Button Content="Parche" Command="{Binding ExportPatchCommand}" ToolTip.Tip="Exporta las diferencias como parche unified diff." />
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+          <Button Name="EditToolsButton" Content="Edición ▾" Classes="toolbarMenu" ToolTip.Tip="Deshacer, copiar secciones y administrar los textos.">
+            <Button.Flyout>
+              <Flyout Placement="BottomEdgeAlignedLeft">
+                <ScrollViewer MaxHeight="520" HorizontalScrollBarVisibility="Disabled">
+                  <StackPanel Classes="commandMenu" Width="230" Spacing="2" Button.Click="CloseCommandMenus">
+                    <Button Content="Deshacer" Command="{Binding UndoMergeCommand}" Classes="quiet" Margin="0,0,4,4" ToolTip.Tip="Revierte la última copia o lo que escribiste en el último panel que usaste." />
+                    <Button Content="Rehacer" Command="{Binding RedoMergeCommand}" Classes="quiet" Margin="0,0,12,4" ToolTip.Tip="Recupera el cambio que acabas de deshacer." />
+                    <Button Content="← Copiar" Command="{Binding CopyToLeftCommand}" Margin="0,0,6,4" ToolTip.Tip="Lleva la sección elegida de la derecha a la izquierda. Puedes deshacerlo." />
+                    <Button Content="Copiar →" Command="{Binding CopyToRightCommand}" Margin="0,0,12,4" ToolTip.Tip="Lleva la sección elegida de la izquierda a la derecha. Puedes deshacerlo." />
+                    <Separator Margin="6" />
+                    <Button Name="CopyLeftTextButton" Content="Copiar texto izquierdo" Command="{Binding CopyLeftTextCommand}" Classes="quiet" ToolTip.Tip="Copia todo el texto izquierdo para pegarlo en otra aplicación." />
+                    <Button Name="CopyResultButton" Content="Copiar resultado" Command="{Binding CopyRightTextCommand}" Classes="primary" ToolTip.Tip="Copia todo el texto de la derecha, incluidos los cambios que aplicaste, para pegarlo donde quieras." />
+                    <Button Content="Limpiar izquierda" Command="{Binding ClearLeftCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Vacía el texto izquierdo. Si te equivocas, usa Recuperar textos." />
+                    <Button Content="Limpiar derecha" Command="{Binding ClearRightCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Vacía el texto derecho. Si te equivocas, usa Recuperar textos." />
+                    <Separator Margin="6" />
+                    <Button Content="Intercambiar" Command="{Binding SwapTextsCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Cambia los textos de lado. El texto de la izquierda pasa a ser el original de la nueva comparación." />
+                    <Button Content="Restablecer" Command="{Binding ResetWorkspaceCommand}" Classes="quiet danger" Margin="0,0,0,4" ToolTip.Tip="Empieza de nuevo: vacía los dos textos y vuelve a las opciones iniciales. Puedes recuperar lo anterior con Recuperar textos." />
+                    <Button Content="Recuperar textos" Command="{Binding RestoreWorkspaceCommand}" Classes="quiet" ToolTip.Tip="Recupera los textos y las opciones que tenías antes de limpiar, intercambiar o restablecer." />
+                  </StackPanel>
+                </ScrollViewer>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+          <Button Name="ViewToolsButton" Content="Vista ▾" Classes="toolbarMenu" ToolTip.Tip="Apariencia y preferencias de lectura del editor.">
+            <Button.Flyout>
+              <Flyout Placement="BottomEdgeAlignedLeft">
+                <StackPanel Classes="commandMenu" Width="230" Spacing="8">
+                  <TextBlock Text="APARIENCIA" Classes="sectionLabel" Margin="10,6" />
+                  <ComboBox Name="AppearancePicker" ItemsSource="{Binding AppearanceModes}" SelectedItem="{Binding SelectedAppearance}" MinWidth="108" AutomationProperties.Name="Apariencia" ToolTip.Tip="Elige colores claros, oscuros o los que usa tu equipo." />
+                  <Separator Margin="6" />
+                  <controls:EditorTypographyButton Name="TypographyButton" />
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+          <Button Name="ToolsButton" Content="Herramientas ▾" Classes="toolbarMenu" ToolTip.Tip="Abre otras herramientas de DiffComparer.">
+            <Button.Flyout>
+              <Flyout Placement="BottomEdgeAlignedLeft">
+                <StackPanel Classes="commandMenu" Width="230" Spacing="2" Button.Click="CloseCommandMenus">
+                  <Button Name="OpenMergeButton" Content="Merge…" Click="OpenMerge" ToolTip.Tip="Combina el original y el entrante por secciones, en un espacio independiente." />
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+          <Button Content="Ayuda" Classes="toolbarMenu" ToolTip.Tip="Abre una guía corta para comparar, copiar cambios y usar el teclado.">
+            <Button.Flyout>
+              <Flyout>
+                <StackPanel MaxWidth="360" Spacing="12">
+                  <TextBlock Text="Compara con tranquilidad" FontSize="20" FontWeight="SemiBold" />
+                  <TextBlock Text="1. Escribe, pega o abre un texto en cada lado. La comparación se actualiza sola." TextWrapping="Wrap" />
+                  <TextBlock Text="2. Verde indica líneas nuevas; rojo, líneas que faltan; amarillo, líneas que cambiaron. La izquierda es el original." TextWrapping="Wrap" />
+                  <TextBlock Text="3. Las flechas entre los textos copian toda la sección marcada con un corchete. Deshacer revierte la copia." TextWrapping="Wrap" />
+                  <TextBlock Text="4. Copiar resultado copia todo el texto derecho. Guardar crea un archivo donde tú elijas." TextWrapping="Wrap" />
+                  <TextBlock Text="F7: siguiente cambio · Mayús + F7: anterior&#xD;&#xA;Ctrl + F: buscar · F3: siguiente resultado&#xD;&#xA;Ctrl + Z / Ctrl + Y: deshacer y rehacer en el editor" TextWrapping="Wrap" Classes="caption" />
+                  <TextBlock Text="Cierra esta ayuda con Esc o haciendo clic fuera." Classes="caption" />
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+        </StackPanel>
+        <TextBlock Grid.Column="1" Text="DiffComparer · Comparar" Classes="caption" VerticalAlignment="Center" Margin="8,0" />
+      </Grid>
+    </Border>
+    <Border Grid.Row="1" Classes="toolbar" Padding="8,6">
+      <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="2">
           <Button Name="PreviousButton" Content="↑ Anterior" AutomationProperties.Name="Cambio anterior" Command="{Binding PreviousChangeCommand}" Margin="0,0,6,4" ToolTip.Tip="Vuelve al cambio anterior. También puedes usar Mayús + F7." />
           <Button Name="NextButton" Content="↓ Siguiente" AutomationProperties.Name="Cambio siguiente" Command="{Binding NextChangeCommand}" Margin="0,0,12,4" ToolTip.Tip="Ve al siguiente cambio. También puedes usar F7." />
-          <Button Content="← Copiar" Command="{Binding CopyToLeftCommand}" Margin="0,0,6,4" ToolTip.Tip="Lleva la sección elegida de la derecha a la izquierda. Puedes deshacerlo." />
-          <Button Content="Copiar →" Command="{Binding CopyToRightCommand}" Margin="0,0,12,4" ToolTip.Tip="Lleva la sección elegida de la izquierda a la derecha. Puedes deshacerlo." />
-          <Button Content="Deshacer" Command="{Binding UndoMergeCommand}" Classes="quiet" Margin="0,0,4,4" ToolTip.Tip="Revierte la última copia o lo que escribiste en el último panel que usaste." />
-          <Button Content="Rehacer" Command="{Binding RedoMergeCommand}" Classes="quiet" Margin="0,0,12,4" ToolTip.Tip="Recupera el cambio que acabas de deshacer." />
           <Button Content="{Binding ReviewButtonText}" Command="{Binding ToggleReviewedCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Marca esta sección como revisada para recordar que ya la comprobaste. Pulsa otra vez para quitar la marca." />
-        </WrapPanel>
-        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-          <TextBox Name="SearchBox" Text="{Binding SearchText, Mode=TwoWay}" Watermark="Buscar en los dos textos…  Ctrl + F"
-                   AutomationProperties.Name="Buscar en ambos textos" ToolTip.Tip="Escribe una palabra o frase para encontrarla en los dos textos." />
-          <Button Grid.Column="1" Content="↑" Command="{Binding FindPreviousCommand}" AutomationProperties.Name="Resultado anterior" ToolTip.Tip="Ve a la aparición anterior de lo que buscas. También puedes usar Mayús + F3." />
-          <Button Grid.Column="2" Content="↓" Command="{Binding FindNextCommand}" AutomationProperties.Name="Resultado siguiente" ToolTip.Tip="Ve a la siguiente aparición de lo que buscas. También puedes usar F3." />
+        </StackPanel>
+        <Grid Grid.Column="1">
+          <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+            <TextBox Name="SearchBox" Text="{Binding SearchText, Mode=TwoWay}" Watermark="Buscar en los dos textos…  Ctrl + F" AutomationProperties.Name="Buscar en ambos textos" ToolTip.Tip="Escribe una palabra o frase para encontrarla en los dos textos." />
+            <Button Grid.Column="1" Content="↑" Command="{Binding FindPreviousCommand}" AutomationProperties.Name="Resultado anterior" ToolTip.Tip="Ve a la aparición anterior de lo que buscas. También puedes usar Mayús + F3." />
+            <Button Grid.Column="2" Content="↓" Command="{Binding FindNextCommand}" AutomationProperties.Name="Resultado siguiente" ToolTip.Tip="Ve a la siguiente aparición de lo que buscas. También puedes usar F3." />
+          </Grid>
         </Grid>
-        <Expander Name="OptionsExpander" Focusable="True" Header="Opciones de comparación y vista" HorizontalAlignment="Stretch"
-                  Background="Transparent" BorderBrush="Transparent"
-                  ToolTip.Tip="Abre o cierra los ajustes para elegir qué comparar y qué destacar. Tus textos se conservan." />
-      </StackPanel>
+        <Expander Grid.Column="2" Name="OptionsExpander" Focusable="True" Header="Opciones" VerticalAlignment="Center" Background="Transparent" BorderBrush="Transparent" ToolTip.Tip="Abre o cierra los ajustes de comparación, resaltado y lectura de archivos." />
+      </Grid>
     </Border>
     <Grid Name="EditorRegion" Grid.Row="2" ColumnDefinitions="*,72,*">
       <Border Classes="card" ClipToBounds="True" MinWidth="220">
-        <Grid RowDefinitions="Auto,Auto,*" Margin="14,12,14,12" RowSpacing="8">
+        <Grid RowDefinitions="Auto,*" Margin="14,12,14,12" RowSpacing="8">
           <StackPanel Spacing="3">
             <TextBlock Classes="sectionLabel" Text="ORIGINAL · IZQUIERDA" />
             <TextBlock Text="{Binding LeftHeader}" ToolTip.Tip="{Binding LeftPath}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
           </StackPanel>
-          <WrapPanel Grid.Row="1">
-            <Button Name="OpenLeftButton" Content="Abrir izquierda" Command="{Binding OpenLeftFileCommand}" Margin="0,0,6,4" ToolTip.Tip="Elige un archivo para usarlo como texto original a la izquierda." />
-            <Button Name="SaveLeftButton" Content="Guardar izq. como…" Command="{Binding SaveLeftAsCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Guarda todo el texto izquierdo en un archivo. Tú eliges dónde y con qué nombre." />
-            <Button Content="Limpiar" Command="{Binding ClearLeftCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Vacía el texto izquierdo. Si te equivocas, usa Recuperar textos." />
-            <Button Name="CopyLeftTextButton" Content="Copiar texto" Command="{Binding CopyLeftTextCommand}" Classes="quiet" ToolTip.Tip="Copia todo el texto izquierdo para pegarlo en otra aplicación." />
-          </WrapPanel>
-          <edit:TextEditor Name="LeftEditor" Grid.Row="2" FontFamily="Cascadia Code,Consolas,monospace" FontSize="13"
-                           Background="{DynamicResource Container}" Foreground="{DynamicResource OnSurface}" ShowLineNumbers="False"
-                           AutomationProperties.Name="Texto original editable" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
-          <StackPanel Grid.Row="2" Margin="78,30,20,0" Spacing="6" IsHitTestVisible="False" IsVisible="{Binding IsLeftEmpty}">
+          <edit:TextEditor Name="LeftEditor" Grid.Row="1" FontFamily="Cascadia Code,Consolas,monospace" FontSize="13" Background="{DynamicResource Container}" Foreground="{DynamicResource OnSurface}" ShowLineNumbers="False" AutomationProperties.Name="Texto original editable" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+          <StackPanel Grid.Row="1" Margin="78,30,20,0" Spacing="6" IsHitTestVisible="False" IsVisible="{Binding IsLeftEmpty}">
             <TextBlock Text="Tu punto de partida" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource OnSurfaceVariant}" />
             <TextBlock Classes="caption" Text="Pega un texto, empieza a escribir o abre un archivo." TextWrapping="Wrap" />
           </StackPanel>
         </Grid>
       </Border>
       <controls:ChangeActionGutter Name="ChangeGutter" Grid.Column="1" ClipToBounds="True" />
-      <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Left" Background="Transparent" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext"
-                    ToolTip.Tip="Arrastra para dar más espacio a uno de los textos." AutomationProperties.Name="Cambiar el ancho de los paneles" />
+      <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Left" Background="Transparent" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" ToolTip.Tip="Arrastra para dar más espacio a uno de los textos." AutomationProperties.Name="Cambiar el ancho de los paneles" />
       <Border Grid.Column="2" Classes="card" ClipToBounds="True" MinWidth="220">
-        <Grid RowDefinitions="Auto,Auto,*" Margin="14,12,14,12" RowSpacing="8">
+        <Grid RowDefinitions="Auto,*" Margin="14,12,14,12" RowSpacing="8">
           <StackPanel Spacing="3">
             <TextBlock Classes="sectionLabel" Text="VERSIÓN A COMPARAR · DERECHA" />
             <TextBlock Text="{Binding RightHeader}" ToolTip.Tip="{Binding RightPath}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
           </StackPanel>
-          <WrapPanel Grid.Row="1">
-            <Button Name="OpenRightButton" Content="Abrir derecha" Command="{Binding OpenRightFileCommand}" Margin="0,0,6,4" ToolTip.Tip="Elige el archivo que quieres comparar con el original de la izquierda." />
-            <Button Name="SaveRightButton" Content="Guardar der. como…" Command="{Binding SaveRightAsCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Guarda todo el texto derecho en un archivo. Tú eliges dónde y con qué nombre." />
-            <Button Content="Limpiar" Command="{Binding ClearRightCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Vacía el texto derecho. Si te equivocas, usa Recuperar textos." />
-            <Button Name="CopyResultButton" Content="Copiar resultado" Command="{Binding CopyRightTextCommand}" Classes="primary" ToolTip.Tip="Copia todo el texto de la derecha, incluidos los cambios que aplicaste, para pegarlo donde quieras." />
-          </WrapPanel>
-          <edit:TextEditor Name="RightEditor" Grid.Row="2" FontFamily="Cascadia Code,Consolas,monospace" FontSize="13"
-                           Background="{DynamicResource Container}" Foreground="{DynamicResource OnSurface}" ShowLineNumbers="False"
-                           AutomationProperties.Name="Texto derecho editable y resultado" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
-          <StackPanel Grid.Row="2" Margin="78,30,20,0" Spacing="6" IsHitTestVisible="False" IsVisible="{Binding IsRightEmpty}">
+          <edit:TextEditor Name="RightEditor" Grid.Row="1" FontFamily="Cascadia Code,Consolas,monospace" FontSize="13" Background="{DynamicResource Container}" Foreground="{DynamicResource OnSurface}" ShowLineNumbers="False" AutomationProperties.Name="Texto derecho editable y resultado" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+          <StackPanel Grid.Row="1" Margin="78,30,20,0" Spacing="6" IsHitTestVisible="False" IsVisible="{Binding IsRightEmpty}">
             <TextBlock Text="¿Qué cambió?" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource OnSurfaceVariant}" />
             <TextBlock Classes="caption" Text="Añade la otra versión. Las diferencias aparecen al escribir." TextWrapping="Wrap" />
           </StackPanel>
         </Grid>
       </Border>
     </Grid>
-    <Border Name="OptionsCard" Grid.Row="2" Classes="card" VerticalAlignment="Top" ZIndex="10" Padding="16" BorderThickness="1"
-            BorderBrush="{DynamicResource OutlineSoft}" BoxShadow="0 8 28 0 #40000000"
-            MaxHeight="{Binding #EditorRegion.Bounds.Height}" IsVisible="{Binding #OptionsExpander.IsExpanded}">
+    <Border Name="OptionsCard" Grid.Row="2" Classes="card" VerticalAlignment="Top" ZIndex="10" Padding="16" BorderThickness="1" BorderBrush="{DynamicResource OutlineSoft}" BoxShadow="0 8 28 0 #40000000" MaxHeight="{Binding #EditorRegion.Bounds.Height}" IsVisible="{Binding #OptionsExpander.IsExpanded}">
       <Grid RowDefinitions="Auto,*" RowSpacing="8">
         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
           <TextBlock Text="Personaliza tu comparación" FontWeight="SemiBold" VerticalAlignment="Center" />
-          <Button Grid.Column="1" Content="Listo" Classes="primary" Click="CloseOptions"
-                  ToolTip.Tip="Cierra estos ajustes y vuelve a los textos. Los cambios se aplican al instante." />
+          <Button Grid.Column="1" Content="Listo" Classes="primary" Click="CloseOptions" ToolTip.Tip="Cierra estos ajustes y vuelve a los textos. Los cambios se aplican al instante." />
         </Grid>
-          <ScrollViewer Grid.Row="1" MaxHeight="{Binding #EditorRegion.Bounds.Height}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="8" Margin="0,10,0,4">
-              <TextBlock Classes="sectionLabel" Text="QUÉ COMPARAR" />
-              <WrapPanel>
-                <CheckBox Content="Ignorar espacios" IsChecked="{Binding IgnoreWhitespace}" IsEnabled="{Binding CanConfigureComparison}" Margin="0,0,18,0"
-                          ToolTip.Tip="Trata los espacios de más y las tabulaciones como si fueran iguales. Esto también se aplica dentro de las frases entre comillas." />
-                <CheckBox Content="Comparar EOL" IsChecked="{Binding CompareLineEndings}" IsEnabled="{Binding CanConfigureComparison}" Margin="0,0,18,0"
-                          ToolTip.Tip="Comprueba si cada línea termina con el mismo tipo de salto. Es útil al mezclar archivos de Windows y otros equipos." />
-                <ComboBox ItemsSource="{Binding Strategies}" SelectedItem="{Binding SelectedStrategy}" IsEnabled="{Binding CanConfigureComparison}" MinWidth="115" Margin="0,0,12,0"
-                          AutomationProperties.Name="Forma de comparar" ToolTip.Tip="Legible agrupa los cambios para que sean fáciles de leer. Mínimo busca la menor cantidad de líneas cambiadas." />
-                <CheckBox Content="Conservar EOL destino" IsChecked="{Binding PreserveDestinationEndings}" IsEnabled="{Binding !CompareLineEndings}"
-                          ToolTip.Tip="Al copiar una sección, conserva la forma de saltar de línea del texto que la recibe. Se desactiva si elegiste comparar esos saltos." />
-              </WrapPanel>
-              <TextBlock Classes="sectionLabel" Text="QUÉ DESTACAR" />
-              <WrapPanel IsEnabled="{Binding CanChangeView}">
-                <CheckBox Content="Resaltar solo diferencias" IsChecked="{Binding OnlyDifferences}" Margin="0,0,18,0" ToolTip.Tip="Baja el brillo de lo que no cambió para que puedas concentrarte en las diferencias. Puedes seguir editando todo." />
-                <TextBlock Text="Líneas alrededor:" VerticalAlignment="Center" Margin="0,0,8,0" ToolTip.Tip="Muestra un poco del texto cercano a cada cambio para que sea más fácil entenderlo." />
-                <NumericUpDown Value="{Binding ContextLines}" Minimum="0" Maximum="20" Increment="1" FormatString="0" IsEnabled="{Binding HasViewFilter}" Width="100" Margin="0,0,18,0"
-                               AutomationProperties.Name="Líneas alrededor de los cambios" ToolTip.Tip="Elige cuántas líneas cercanas quedan destacadas al usar un filtro. Cero destaca solo lo que coincide." />
-                <CheckBox Content="Agregadas" IsChecked="{Binding ShowAdded}" Foreground="{DynamicResource AddedInk}" Margin="0,0,18,0" ToolTip.Tip="Muestra u oculta el resaltado verde de las líneas nuevas que aparecen a la derecha." />
-                <CheckBox Content="Eliminadas" IsChecked="{Binding ShowDeleted}" Foreground="{DynamicResource DeletedInk}" Margin="0,0,18,0" ToolTip.Tip="Muestra u oculta el resaltado rojo de las líneas que solo están en el original de la izquierda." />
-                <CheckBox Content="Modificadas" IsChecked="{Binding ShowModified}" Foreground="{DynamicResource ModifiedInk}" Margin="0,0,18,0" ToolTip.Tip="Muestra u oculta el resaltado amarillo de las líneas que cambiaron." />
-                <CheckBox Content="Solo movidas" IsChecked="{Binding MovedOnly}" Margin="0,0,18,0" ToolTip.Tip="Concentra la vista en las secciones que aparecen en otro lugar del texto." />
-                <CheckBox Content="Sin revisar" IsChecked="{Binding UnreviewedOnly}" Margin="0,0,18,0" ToolTip.Tip="Destaca solo las secciones que todavía no marcaste como revisadas." />
-                <CheckBox Content="Enfocar resultados" IsChecked="{Binding SearchOnly}" Margin="0,0,18,0" ToolTip.Tip="Concentra la vista en las líneas donde aparece lo que escribiste en el buscador. No busca similitudes entre los textos." />
-                <CheckBox Content="Espacios visibles" IsChecked="{Binding ShowWhitespace}" ToolTip.Tip="Dibuja pequeñas marcas donde hay espacios y saltos de línea. No cambia lo que escribiste." />
-              </WrapPanel>
-              <TextBlock Classes="sectionLabel" Text="ARCHIVOS Y APARIENCIA DEL TEXTO" />
-              <WrapPanel>
-                <ComboBox ItemsSource="{Binding Encodings}" SelectedItem="{Binding SelectedEncoding}" IsEnabled="{Binding !IsBusy}" MinWidth="150" Margin="0,0,12,4"
-                          AutomationProperties.Name="Lectura del archivo" ToolTip.Tip="Elige cómo leer las letras del próximo archivo que abras. Deja Automático; cambia esta opción solo si las tildes se ven mal." />
-                <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" MinWidth="130" Margin="0,0,18,4"
-                          AutomationProperties.Name="Colores del código" ToolTip.Tip="Elige el tipo de código para colorear sus palabras. Texto muestra todas las palabras con el mismo color." />
-                <Button Content="Informe HTML" Command="{Binding ExportHtmlCommand}" Margin="0,0,8,4" ToolTip.Tip="Guarda una comparación completa que puedes abrir en tu navegador y compartir con otra persona." />
-                <Button Content="Parche" Command="{Binding ExportPatchCommand}" Margin="0,0,8,4" ToolTip.Tip="Guarda un archivo con las instrucciones para aplicar todos los cambios en otra copia del original." />
-              </WrapPanel>
-            </StackPanel>
-          </ScrollViewer>
+        <ScrollViewer Grid.Row="1" MaxHeight="{Binding #EditorRegion.Bounds.Height}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+          <StackPanel Spacing="8" Margin="0,10,0,4">
+            <TextBlock Classes="sectionLabel" Text="QUÉ COMPARAR" />
+            <WrapPanel>
+              <CheckBox Content="Ignorar espacios" IsChecked="{Binding IgnoreWhitespace}" IsEnabled="{Binding CanConfigureComparison}" Margin="0,0,18,0" ToolTip.Tip="Trata los espacios de más y las tabulaciones como si fueran iguales. Esto también se aplica dentro de las frases entre comillas." />
+              <CheckBox Content="Comparar EOL" IsChecked="{Binding CompareLineEndings}" IsEnabled="{Binding CanConfigureComparison}" Margin="0,0,18,0" ToolTip.Tip="Comprueba si cada línea termina con el mismo tipo de salto. Es útil al mezclar archivos de Windows y otros equipos." />
+              <ComboBox ItemsSource="{Binding Strategies}" SelectedItem="{Binding SelectedStrategy}" IsEnabled="{Binding CanConfigureComparison}" MinWidth="115" Margin="0,0,12,0" AutomationProperties.Name="Forma de comparar" ToolTip.Tip="Legible agrupa los cambios para que sean fáciles de leer. Mínimo busca la menor cantidad de líneas cambiadas." />
+              <CheckBox Content="Conservar EOL destino" IsChecked="{Binding PreserveDestinationEndings}" IsEnabled="{Binding !CompareLineEndings}" ToolTip.Tip="Al copiar una sección, conserva la forma de saltar de línea del texto que la recibe. Se desactiva si elegiste comparar esos saltos." />
+            </WrapPanel>
+            <TextBlock Classes="sectionLabel" Text="QUÉ DESTACAR" />
+            <WrapPanel IsEnabled="{Binding CanChangeView}">
+              <CheckBox Content="Resaltar solo diferencias" IsChecked="{Binding OnlyDifferences}" Margin="0,0,18,0" ToolTip.Tip="Baja el brillo de lo que no cambió para que puedas concentrarte en las diferencias. Puedes seguir editando todo." />
+              <TextBlock Text="Líneas alrededor:" VerticalAlignment="Center" Margin="0,0,8,0" ToolTip.Tip="Muestra un poco del texto cercano a cada cambio para que sea más fácil entenderlo." />
+              <NumericUpDown Value="{Binding ContextLines}" Minimum="0" Maximum="20" Increment="1" FormatString="0" IsEnabled="{Binding HasViewFilter}" Width="100" Margin="0,0,18,0" AutomationProperties.Name="Líneas alrededor de los cambios" ToolTip.Tip="Elige cuántas líneas cercanas quedan destacadas al usar un filtro. Cero destaca solo lo que coincide." />
+              <CheckBox Content="Agregadas" IsChecked="{Binding ShowAdded}" Foreground="{DynamicResource AddedInk}" Margin="0,0,18,0" ToolTip.Tip="Muestra u oculta el resaltado verde de las líneas nuevas que aparecen a la derecha." />
+              <CheckBox Content="Eliminadas" IsChecked="{Binding ShowDeleted}" Foreground="{DynamicResource DeletedInk}" Margin="0,0,18,0" ToolTip.Tip="Muestra u oculta el resaltado rojo de las líneas que solo están en el original de la izquierda." />
+              <CheckBox Content="Modificadas" IsChecked="{Binding ShowModified}" Foreground="{DynamicResource ModifiedInk}" Margin="0,0,18,0" ToolTip.Tip="Muestra u oculta el resaltado amarillo de las líneas que cambiaron." />
+              <CheckBox Content="Solo movidas" IsChecked="{Binding MovedOnly}" Margin="0,0,18,0" ToolTip.Tip="Concentra la vista en las secciones que aparecen en otro lugar del texto." />
+              <CheckBox Content="Sin revisar" IsChecked="{Binding UnreviewedOnly}" Margin="0,0,18,0" ToolTip.Tip="Destaca solo las secciones que todavía no marcaste como revisadas." />
+              <CheckBox Content="Enfocar resultados" IsChecked="{Binding SearchOnly}" Margin="0,0,18,0" ToolTip.Tip="Concentra la vista en las líneas donde aparece lo que escribiste en el buscador. No busca similitudes entre los textos." />
+              <CheckBox Content="Espacios visibles" IsChecked="{Binding ShowWhitespace}" ToolTip.Tip="Dibuja pequeñas marcas donde hay espacios y saltos de línea. No cambia lo que escribiste." />
+            </WrapPanel>
+            <TextBlock Classes="sectionLabel" Text="ARCHIVOS Y APARIENCIA DEL TEXTO" />
+            <WrapPanel>
+              <ComboBox ItemsSource="{Binding Encodings}" SelectedItem="{Binding SelectedEncoding}" IsEnabled="{Binding !IsBusy}" MinWidth="150" Margin="0,0,12,4" AutomationProperties.Name="Lectura del archivo" ToolTip.Tip="Elige cómo leer las letras del próximo archivo que abras. Deja Automático; cambia esta opción solo si las tildes se ven mal." />
+              <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" MinWidth="130" Margin="0,0,18,4" AutomationProperties.Name="Colores del código" ToolTip.Tip="Elige el tipo de código para colorear sus palabras. Texto muestra todas las palabras con el mismo color." />
+            </WrapPanel>
+          </StackPanel>
+        </ScrollViewer>
       </Grid>
     </Border>
     <StackPanel Grid.Row="3" Spacing="6">
@@ -178,16 +191,10 @@ Ctrl + Z / Ctrl + Y: deshacer y rehacer en el editor" TextWrapping="Wrap" Classe
           <TextBlock Text="{Binding CurrentChangeDetails}" Classes="caption changeDetails" TextWrapping="Wrap" />
           <TextBlock Text="{Binding CopyHint}" Foreground="{DynamicResource ModifiedInk}" TextWrapping="Wrap" />
         </StackPanel>
-        <WrapPanel Grid.Column="1" MaxWidth="300" HorizontalAlignment="Right" VerticalAlignment="Center">
-          <Button Content="Intercambiar" Command="{Binding SwapTextsCommand}" Classes="quiet" Margin="0,0,6,4" ToolTip.Tip="Cambia los textos de lado. El texto de la izquierda pasa a ser el original de la nueva comparación." />
-          <Button Content="Restablecer" Command="{Binding ResetWorkspaceCommand}" Classes="quiet danger" Margin="0,0,0,4" ToolTip.Tip="Empieza de nuevo: vacía los dos textos y vuelve a las opciones iniciales. Puedes recuperar lo anterior con Recuperar textos." />
-        </WrapPanel>
       </Grid>
       <Border Background="{DynamicResource PrimaryContainer}" CornerRadius="12" Padding="12,6" IsVisible="{Binding HasWorkspaceNotice}">
         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
           <TextBlock Text="{Binding WorkspaceNotice}" Foreground="{DynamicResource OnPrimaryContainer}" VerticalAlignment="Center" TextWrapping="Wrap" />
-          <Button Grid.Column="1" Content="Recuperar textos" Command="{Binding RestoreWorkspaceCommand}" IsVisible="{Binding CanRestoreWorkspace}"
-                  Classes="quiet" ToolTip.Tip="Recupera los textos y las opciones que tenías antes de limpiar, intercambiar o restablecer." />
         </Grid>
       </Border>
     </StackPanel>

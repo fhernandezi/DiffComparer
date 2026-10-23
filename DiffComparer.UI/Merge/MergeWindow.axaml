@@ -1,0 +1,144 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:merge="using:DiffComparer.UI.Merge" xmlns:controls="using:DiffComparer.UI.Controls" xmlns:edit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit" x:Class="DiffComparer.UI.Merge.MergeWindow" x:DataType="merge:MergeWorkspaceViewModel" Title="DiffComparer · Merge por secciones" Width="1250" Height="900" MinWidth="900" MinHeight="700" Background="{DynamicResource Surface}">
+  <Window.Styles>
+    <Style Selector="CheckBox.mergeChoice">
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Name="ChoiceBox" Width="20" Height="20" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource OnSurfaceVariant}" Background="{DynamicResource Container}">
+            <TextBlock Name="ChoiceMark" Text="✓" Opacity="0" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource OnPrimaryContainer}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="CheckBox.mergeChoice:checked /template/ Border#ChoiceBox">
+      <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+    </Style>
+    <Style Selector="CheckBox.mergeChoice:checked /template/ TextBlock#ChoiceMark">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="CheckBox.mergeChoice:pointerover /template/ Border#ChoiceBox">
+      <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="CheckBox.mergeChoice:focus-visible /template/ Border#ChoiceBox">
+      <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="edit|TextEditor">
+      <Setter Property="ShowLineNumbers" Value="True" />
+      <Setter Property="Background" Value="{DynamicResource Container}" />
+      <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+      <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+      <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+    </Style>
+  </Window.Styles>
+  <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="20" RowSpacing="10">
+    <Border Classes="toolbar" Padding="8,4">
+      <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+        <StackPanel Orientation="Horizontal" Spacing="2">
+          <Button Name="FileToolsButton" Content="Archivo ▾" Classes="toolbarMenu" ToolTip.Tip="Abrir las fuentes y guardar el resultado.">
+            <Button.Flyout>
+              <Flyout Placement="BottomEdgeAlignedLeft">
+                <StackPanel Classes="commandMenu" Width="250" Spacing="2" Button.Click="CloseCommandMenus">
+                  <Button Content="Abrir original…" Command="{Binding OpenCommand}" CommandParameter="left" IsEnabled="{Binding CanEditSources}" />
+                  <Button Content="Abrir entrante…" Command="{Binding OpenCommand}" CommandParameter="right" IsEnabled="{Binding CanEditSources}" />
+                  <Separator Margin="6" />
+                  <Button Content="Guardar resultado como…" Command="{Binding SaveCommand}" IsEnabled="{Binding CanSave}" />
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+          <Button Name="EditToolsButton" Content="Edición ▾" Classes="toolbarMenu" ToolTip.Tip="Historial, selección de ambos lados y edición manual del resultado.">
+            <Button.Flyout>
+              <Flyout Placement="BottomEdgeAlignedLeft">
+                <StackPanel Classes="commandMenu" Width="270" Spacing="2" Button.Click="CloseCommandMenus">
+                  <Button Content="Deshacer selección" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}" />
+                  <Button Content="Rehacer selección" Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo}" />
+                  <Separator Margin="6" />
+                  <Button Content="Ambas en esta sección" Command="{Binding IncludeBothCommand}" IsEnabled="{Binding CanNavigate}" />
+                  <Button Content="Editar resultado manualmente" Command="{Binding FinalizeResultCommand}" IsEnabled="{Binding CanChoose}" IsVisible="{Binding !IsFinalEditing}" />
+                  <Button Content="Usar resultado como original" Command="{Binding EditInputsCommand}" IsVisible="{Binding IsFinalEditing}" />
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+          <Button Name="ViewToolsButton" Content="Vista ▾" Classes="toolbarMenu" ToolTip.Tip="Fuente, tamaño, interlineado y zoom.">
+            <Button.Flyout>
+              <Flyout Placement="BottomEdgeAlignedLeft">
+                <StackPanel Classes="commandMenu" Width="230" Spacing="8">
+                  <controls:EditorTypographyButton Name="TypographyButton" />
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+          <Button Content="Ayuda" Classes="toolbarMenu" ToolTip.Tip="Cómo combinar las secciones del original y del entrante.">
+            <Button.Flyout>
+              <Flyout Placement="BottomEdgeAlignedLeft">
+                <StackPanel Width="330" Spacing="10">
+                  <TextBlock Text="Combinar por secciones" FontSize="18" FontWeight="SemiBold" />
+                  <TextBlock Text="1. Abre o pega el original y el entrante. Las diferencias aparecen al escribir." TextWrapping="Wrap" />
+                  <TextBlock Text="2. Marca los checks del margen. Puedes incluir original, entrante o ambos; ambos coloca primero el original." TextWrapping="Wrap" />
+                  <TextBlock Text="3. Revisa el resultado inferior. Guarda desde Archivo o habilita su edición manual desde Edición." TextWrapping="Wrap" />
+                  <TextBlock Text="Texto y zoom están en Vista. Los separadores permiten ajustar los paneles." Classes="caption" TextWrapping="Wrap" />
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+        </StackPanel>
+        <TextBlock Grid.Column="1" Text="DiffComparer · Merge" Classes="caption" VerticalAlignment="Center" Margin="8,0" />
+      </Grid>
+    </Border>
+    <Border Grid.Row="1" Classes="toolbar" Padding="8,6">
+      <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8">
+        <Button Content="↑ Anterior" Command="{Binding PreviousCommand}" IsEnabled="{Binding CanNavigate}" ToolTip.Tip="Ve a la sección anterior." />
+        <Button Grid.Column="1" Content="↓ Siguiente" Command="{Binding NextCommand}" IsEnabled="{Binding CanNavigate}" ToolTip.Tip="Ve a la siguiente sección." />
+        <TextBlock Grid.Column="2" Text="{Binding SectionTitle}" VerticalAlignment="Center" Margin="8,0" />
+        <Button Grid.Column="3" Content="Guardar resultado…" Command="{Binding SaveCommand}" IsEnabled="{Binding CanSave}" Classes="primary" ToolTip.Tip="Guarda el resultado combinado donde elijas." />
+      </Grid>
+    </Border>
+    <Grid Name="MergeEditorLayout" Grid.Row="2" RowDefinitions="*,8,*">
+      <Grid Name="SourcePanels" ColumnDefinitions="*,8,*">
+        <Border Name="LeftPanel" Classes="card" Padding="12" MinWidth="200">
+          <Grid RowDefinitions="Auto,*" RowSpacing="8">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+              <StackPanel>
+                <TextBlock Text="ORIGINAL · IZQUIERDA" Classes="sectionLabel" />
+                <TextBlock Text="{Binding LeftName}" TextTrimming="CharacterEllipsis" FontWeight="SemiBold" />
+              </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1" ColumnDefinitions="38,*">
+              <merge:MergeSectionGutter Name="LeftGutter" />
+              <edit:TextEditor Grid.Column="1" Name="LeftInput" IsReadOnly="{Binding !CanEditSources}" AutomationProperties.Name="Original editable" />
+            </Grid>
+          </Grid>
+        </Border>
+        <GridSplitter Grid.Column="1" ResizeDirection="Columns" HorizontalAlignment="Stretch" Background="Transparent" />
+        <Border Name="RightPanel" Grid.Column="2" Classes="card" Padding="12" MinWidth="200">
+          <Grid RowDefinitions="Auto,*" RowSpacing="8">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+              <StackPanel>
+                <TextBlock Text="ENTRANTE · DERECHA" Classes="sectionLabel" />
+                <TextBlock Text="{Binding RightName}" TextTrimming="CharacterEllipsis" FontWeight="SemiBold" />
+              </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1" ColumnDefinitions="38,*">
+              <merge:MergeSectionGutter Name="RightGutter" />
+              <edit:TextEditor Grid.Column="1" Name="RightInput" IsReadOnly="{Binding !CanEditSources}" AutomationProperties.Name="Entrante editable" />
+            </Grid>
+          </Grid>
+        </Border>
+      </Grid>
+      <GridSplitter Grid.Row="1" ResizeDirection="Rows" VerticalAlignment="Stretch" Background="Transparent" />
+      <Border Name="ResultPanel" Grid.Row="2" Classes="card" Padding="12" MinHeight="160">
+        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="8">
+          <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+            <TextBlock Text="RESULTADO DEL MERGE" Classes="sectionLabel" VerticalAlignment="Center" />
+          </Grid>
+          <edit:TextEditor Grid.Row="1" Name="ResultEditor" IsReadOnly="{Binding !IsFinalEditing}" AutomationProperties.Name="Resultado del merge" />
+          <TextBlock Grid.Row="2" Text="Edición manual del resultado · Ctrl+Z / Ctrl+Y" Classes="caption" IsVisible="{Binding IsFinalEditing}" />
+        </Grid>
+      </Border>
+    </Grid>
+    <TextBlock Grid.Row="3" Text="{Binding Status}" TextWrapping="Wrap" Classes="caption" />
+  </Grid>
+</Window>

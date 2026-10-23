@@ -14,6 +14,9 @@ Built with **.NET 10** and **Avalonia**. The interface is currently in **Spanish
 
 ## Features
 
+- **Adjust text for reading.** **Vista → Texto** in comparison and merge offers installed fonts, font size, line spacing, word wrap and zoom. Use Ctrl+wheel, Ctrl++/− and Ctrl+0. Preferences are shared across both windows and saved on normal application exit.
+- **Organized toolbar.** File, editing, view and help actions are grouped in dropdowns, with quick navigation above the editors. Open merge from **Herramientas → Merge…**.
+- **Selective merge.** Compare original and incoming text live in a separate window. Differences have individual margin checkboxes that apply each section to the result below. [Merge guide and architecture (Spanish)](docs/MERGE.es.md).
 - **Compare while editing.** Both panels remain editable. Comparison runs automatically after a 250 ms typing pause, preserving the caret, selection and undo history.
 - **Understand each change.** Green marks added lines, red marks deleted lines and yellow marks modified lines. Changed fragments, section brackets and original line numbers help locate the differences.
 - **Copy complete sections.** Apply changes from either side, undo or redo copies, and reject actions based on outdated comparisons.

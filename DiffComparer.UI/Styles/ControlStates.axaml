@@ -1,0 +1,187 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="ButtonSurface">#F3F4F6</SolidColorBrush>
+          <SolidColorBrush x:Key="ControlOutline">#64748B</SolidColorBrush>
+          <SolidColorBrush x:Key="DisabledSurface">#F3F4F6</SolidColorBrush>
+          <SolidColorBrush x:Key="DisabledForeground">#737E8C</SolidColorBrush>
+          <SolidColorBrush x:Key="DisabledOutline">#D1D5DB</SolidColorBrush>
+          <SolidColorBrush x:Key="ActionOutline">#2563EB</SolidColorBrush>
+          <SolidColorBrush x:Key="ActionHover">#BFDBFE</SolidColorBrush>
+          <SolidColorBrush x:Key="ActionPressed">#93C5FD</SolidColorBrush>
+          <SolidColorBrush x:Key="DangerHover">#F87171</SolidColorBrush>
+          <SolidColorBrush x:Key="DangerPressed">#FCA5A5</SolidColorBrush>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="ButtonSurface">#273449</SolidColorBrush>
+          <SolidColorBrush x:Key="ControlOutline">#8A9AB3</SolidColorBrush>
+          <SolidColorBrush x:Key="DisabledSurface">#202A39</SolidColorBrush>
+          <SolidColorBrush x:Key="DisabledForeground">#8391A6</SolidColorBrush>
+          <SolidColorBrush x:Key="DisabledOutline">#39465A</SolidColorBrush>
+          <SolidColorBrush x:Key="ActionOutline">#60A5FA</SolidColorBrush>
+          <SolidColorBrush x:Key="ActionHover">#064AB4</SolidColorBrush>
+          <SolidColorBrush x:Key="ActionPressed">#003078</SolidColorBrush>
+          <SolidColorBrush x:Key="DangerHover">#9F1239</SolidColorBrush>
+          <SolidColorBrush x:Key="DangerPressed">#7F1D1D</SolidColorBrush>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+      <!-- Own the complete button surface: no inherited Fluent hover/pressed layers or animations. -->
+      <ControlTheme x:Key="AppButtonTheme" TargetType="Button">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+          <ControlTemplate>
+            <ContentPresenter Name="ActionSurface" RecognizesAccessKey="True"
+                              Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}"
+                              BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                              CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}"
+                              Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </ControlTemplate>
+        </Setter>
+      </ControlTheme>
+    </ResourceDictionary>
+  </Styles.Resources>
+  <Style Selector="Button">
+    <Setter Property="Theme" Value="{StaticResource AppButtonTheme}" />
+    <Setter Property="MinHeight" Value="36" />
+    <Setter Property="Padding" Value="12,7" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="Background" Value="{DynamicResource ButtonSurface}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ControlOutline}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Opacity" Value="1" />
+    <Setter Property="Transitions"><Transitions /></Setter>
+  </Style>
+  <Style Selector="Button.quiet">
+    <Setter Property="Background" Value="{DynamicResource ButtonSurface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ControlOutline}" />
+  </Style>
+  <Style Selector="Button.primary">
+    <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainer}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ActionOutline}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="Button.danger">
+    <Setter Property="Background" Value="{DynamicResource Error}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnError}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ControlOutline}" />
+  </Style>
+  <Style Selector="Button.toolbarMenu">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+  <Style Selector="StackPanel.commandMenu > Button:not(.primary):not(.danger)">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+  <Style Selector="Button:pointerover:not(:disabled)">
+    <Setter Property="Background" Value="{DynamicResource SecondaryContainer}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnSecondaryContainer}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FocusRing}" />
+  </Style>
+  <Style Selector="Button:pressed:not(:disabled)">
+    <Setter Property="Background" Value="{DynamicResource PressedSurface}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FocusRing}" />
+  </Style>
+  <Style Selector="Button.primary:pointerover:not(:disabled)">
+    <Setter Property="Background" Value="{DynamicResource ActionHover}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainer}" />
+  </Style>
+  <Style Selector="Button.primary:pressed:not(:disabled)">
+    <Setter Property="Background" Value="{DynamicResource ActionPressed}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainer}" />
+  </Style>
+  <Style Selector="Button.danger:pointerover:not(:disabled)">
+    <Setter Property="Background" Value="{DynamicResource DangerHover}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnError}" />
+  </Style>
+  <Style Selector="Button.danger:pressed:not(:disabled)">
+    <Setter Property="Background" Value="{DynamicResource DangerPressed}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnError}" />
+  </Style>
+  <Style Selector="Button:focus-visible:not(:disabled)">
+    <Setter Property="BorderBrush" Value="{DynamicResource FocusRing}" />
+    <Setter Property="BorderThickness" Value="2" />
+  </Style>
+  <Style Selector="Button:disabled">
+    <Setter Property="Background" Value="{DynamicResource DisabledSurface}" />
+    <Setter Property="Foreground" Value="{DynamicResource DisabledForeground}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource DisabledOutline}" />
+    <Setter Property="Opacity" Value="1" />
+    <Setter Property="Cursor" Value="Arrow" />
+  </Style>
+
+  <!-- Keep Fluent's editing, selection and accessibility behavior; explicitly style its actual state surfaces. -->
+  <Style Selector="TextBox">
+    <Setter Property="MinHeight" Value="38" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
+    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+    <Setter Property="CaretBrush" Value="{DynamicResource OnSurface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ControlOutline}" />
+    <Setter Property="BorderThickness" Value="2" />
+    <Setter Property="SelectionBrush" Value="{DynamicResource PrimaryContainer}" />
+    <Setter Property="SelectionForegroundBrush" Value="{DynamicResource OnPrimaryContainer}" />
+  </Style>
+  <Style Selector="TextBox /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ControlOutline}" />
+  </Style>
+  <Style Selector="TextBox:pointerover:not(:disabled) /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FocusRing}" />
+  </Style>
+  <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FocusRing}" />
+  </Style>
+  <Style Selector="TextBox:pointerover:not(:disabled), TextBox:focus">
+    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+  </Style>
+  <Style Selector="TextBox /template/ TextBlock#PART_Watermark, TextBox:pointerover /template/ TextBlock#PART_Watermark, TextBox:focus /template/ TextBlock#PART_Watermark">
+    <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
+    <Setter Property="Opacity" Value="1" />
+  </Style>
+  <Style Selector="TextBox:disabled /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource DisabledSurface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource DisabledOutline}" />
+  </Style>
+  <Style Selector="TextBox:disabled">
+    <Setter Property="Foreground" Value="{DynamicResource DisabledForeground}" />
+  </Style>
+
+  <Style Selector="ComboBox /template/ Border#Background">
+    <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ControlOutline}" />
+  </Style>
+  <Style Selector="ComboBox:pointerover:not(:disabled) /template/ Border#Background, ComboBox:pressed:not(:disabled) /template/ Border#Background">
+    <Setter Property="Background" Value="{DynamicResource ContainerHigh}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FocusRing}" />
+  </Style>
+  <Style Selector="ComboBox:focus-visible /template/ Border#HighlightBackground">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FocusRing}" />
+  </Style>
+  <Style Selector="ComboBox:focus-visible /template/ ContentControl#ContentPresenter, ComboBox:focus:pressed /template/ ContentControl#ContentPresenter">
+    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+  </Style>
+  <Style Selector="ComboBox /template/ Border#PopupBorder">
+    <Setter Property="Background" Value="{DynamicResource Container}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ControlOutline}" />
+  </Style>
+  <Style Selector="ComboBox:disabled /template/ Border#Background">
+    <Setter Property="Background" Value="{DynamicResource DisabledSurface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource DisabledOutline}" />
+  </Style>
+</Styles>

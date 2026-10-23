@@ -11,12 +11,14 @@
 	<Application.Styles>
 		<FluentTheme>
             <FluentTheme.Palettes>
-                <ColorPaletteResources x:Key="Light" Accent="#415F91" />
-                <ColorPaletteResources x:Key="Dark" Accent="#AAC7FF" />
+                <ColorPaletteResources x:Key="Light" Accent="#3B82F6" RegionColor="#F9FAFB" BaseHigh="#1F2937" />
+                <ColorPaletteResources x:Key="Dark" Accent="#003994" RegionColor="#1F2937" BaseHigh="#F9FAFB" />
             </FluentTheme.Palettes>
         </FluentTheme>
 
 		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
 	    <StyleInclude Source="avares://DiffComparer.UI/Styles/Material.axaml" />
+        <StyleInclude Source="avares://DiffComparer.UI/Styles/Toolbar.axaml" />
+        <StyleInclude Source="avares://DiffComparer.UI/Styles/ControlStates.axaml" />
 	</Application.Styles>
 </Application>
